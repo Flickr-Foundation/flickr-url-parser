@@ -10,8 +10,10 @@ anyio==3.7.1
     #   httpcore
 black==23.3.0
     # via -r dev_requirements.in
-bleach==6.1.0
-    # via readme-renderer
+bleach==6.0.0
+    # via
+    #   -r dev_requirements.in
+    #   readme-renderer
 certifi==2023.7.22
     # via
     #   httpcore

@@ -17,6 +17,7 @@ vcrpy<5
 # Version pins for 3.7 for things we don't depend on directly, but are
 # dependencies of libraries we actually use.
 anyio<4.0.0
+bleach<6.1.0
 importlib-metadata<4.3
 jaraco-classes<3.3.0
 markdown-it-py<3.0.0
