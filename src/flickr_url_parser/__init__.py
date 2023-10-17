@@ -27,7 +27,7 @@ def is_page(path_component):
     return re.match(r"^page\d+$", path_component)
 
 
-def parse_flickr_url(url: str) -> dict[str, object]:
+def parse_flickr_url(url: str):
     """
     Parse a Flickr URL and return some key information, e.g. whether it's
     a single photo, an album, a user.
