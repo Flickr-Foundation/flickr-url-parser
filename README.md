@@ -54,6 +54,19 @@ $ coverage run -m pytest tests
 $ coverage report
 ```
 
+To create a new version on PyPI:
+
+1.  Update the version in `setup.py`
+2.  Add release notes in `CHANGELOG.md` and push a new tag to GitHub
+3.  Deploy the release using twine:
+
+    ```console
+    $ python3 setup.py sdist
+    $ python3 -m twine upload dist/* --username=__token__
+    ```
+    
+    You will need [a PyPI API token](https://pypi.org/help/#apitoken) to publish packages.
+
 ## License
 
 This project is dual-licensed as Apache-2.0 and MIT.
