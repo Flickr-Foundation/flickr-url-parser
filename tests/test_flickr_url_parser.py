@@ -168,13 +168,14 @@ def test_it_parses_a_group(url):
 @pytest.mark.parametrize(
     "url",
     [
+        "https://www.flickr.com/photos/flickr/gallery/72157722096057728/",
+        "https://www.flickr.com/photos/flickr/gallery/72157722096057728/page2",
         "https://www.flickr.com/photos/flickr/galleries/72157722096057728/",
-        "https://www.flickr.com/photos/flickr/galleries/72157722096057728/page2",
     ],
 )
 def test_it_parses_a_gallery(url):
     assert parse_flickr_url(url) == {
-        "type": "galleries",
+        "type": "gallery",
         "gallery_id": "72157722096057728",
     }
 
@@ -184,7 +185,7 @@ def test_it_parses_a_gallery(url):
 )
 def test_it_parses_a_short_gallery(vcr_cassette, url):
     assert parse_flickr_url(url) == {
-        "type": "galleries",
+        "type": "gallery",
         "gallery_id": "72157690638331410",
     }
 
@@ -206,7 +207,7 @@ def test_it_doesnt_parse_bad_short_gallery_urls(vcr_cassette, url):
 )
 def test_it_parses_a_tag(url):
     assert parse_flickr_url(url) == {
-        "type": "tags",
+        "type": "tag",
         "tag": "fluorspar",
     }
 

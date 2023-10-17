@@ -27,12 +27,43 @@ def is_page(path_component):
     return re.match(r"^page\d+$", path_component)
 
 
-def parse_flickr_url(url: str):
+def parse_flickr_url(url: str) -> dict[str, object]:
     """
-    Categorises a Flickr URL, e.g. whether it's a single photo, an album,
-    a user.
+    Parse a Flickr URL and return some key information, e.g. whether it's
+    a single photo, an album, a user.
 
-    This is the first step of flinumeration.
+    The return value will be a dictionary with a key ``type`` and then some
+    extra keys depending on the type, e.g.
+
+        {'type': 'single_photo', 'photo_id': '50567413447'}
+
+    Possible values for ``type``:
+
+    -   ``single_photo``
+            This will include a single extra key: ``photo_id``.
+
+    -   ``album``
+            This will include two extra keys: ``album_id`` and ``user_url``.
+            Look up the latter with Flickr's ``flickr.urls.lookupUser`` API.
+
+    -   ``user``
+            This will include a single extra key: ``user_url``.
+            Look up the latter with Flickr's ``flickr.urls.lookupUser`` API.
+
+    -   ``group``
+            This will include a single extra key: ``group_url``.
+            Look it up with Flickr's ``flickr.urls.lookupGroup`` API.
+
+    -   ``gallery``
+            This will include a single extra key: ``gallery_id``.
+
+    -   ``tag``
+            This will include a single extra key: ``tag``.
+
+    If you pass a URL which isn't a Flickr URL, or a Flickr URL which
+    isn't recognised, then the function will throw ``NotAFlickrUrl``
+    or ``UnrecognisedUrl`` exceptions.
+
     """
     try:
         u = hyperlink.URL.from_text(url.rstrip("/"))
@@ -76,7 +107,7 @@ def parse_flickr_url(url: str):
     # This is for short URLs that point to:
     #
     #     - albums, e.g. http://flic.kr/s/aHsjybZ5ZD
-    #     - galleries, e.g. https://flic.kr/y/2Xry4Jt
+    #     - gallery, e.g. https://flic.kr/y/2Xry4Jt
     #     - people/users, e.g. https://flic.kr/ps/ZVcni
     #
     # Although we can base58 decode the album ID, that doesn't tell
@@ -208,27 +239,18 @@ def parse_flickr_url(url: str):
 
     # URLs for a gallery, e.g.
     #
-    #     https://www.flickr.com/photos/flickr/galleries/72157722096057728/
-    #     https://www.flickr.com/photos/flickr/galleries/72157722096057728/page2
+    #     https://www.flickr.com/photos/flickr/gallery/72157722096057728/
+    #     https://www.flickr.com/photos/flickr/gallery/72157722096057728/page2
+    #     https://www.flickr.com/photos/flickr/galleries/72157690638331410/
     #
     if (
         is_long_url
-        and len(u.path) == 4
+        and len(u.path) >= 4
         and u.path[0] == "photos"
-        and u.path[2] == "galleries"
+        and u.path[2] in {"gallery", "galleries"}
         and u.path[3].isnumeric()
     ):
-        return {"type": "galleries", "gallery_id": u.path[3]}
-
-    if (
-        is_long_url
-        and len(u.path) == 5
-        and u.path[0] == "photos"
-        and u.path[2] == "galleries"
-        and u.path[3].isnumeric()
-        and is_page(u.path[4])
-    ):
-        return {"type": "galleries", "gallery_id": u.path[3]}
+        return {"type": "gallery", "gallery_id": u.path[3]}
 
     # URL for a tag, e.g.
     #
@@ -241,7 +263,7 @@ def parse_flickr_url(url: str):
         and u.path[0] == "photos"
         and u.path[1] == "tags"
     ):
-        return {"type": "tags", "tag": u.path[2]}
+        return {"type": "tag", "tag": u.path[2]}
 
     if (
         is_long_url
@@ -250,9 +272,9 @@ def parse_flickr_url(url: str):
         and u.path[1] == "tags"
         and is_page(u.path[3])
     ):
-        return {"type": "tags", "tag": u.path[2]}
+        return {"type": "tag", "tag": u.path[2]}
 
     raise UnrecognisedUrl(f"Unrecognised URL: {url}")
 
 
-__all__ = ['parse_flickr_url', 'UnrecognisedUrl', 'NotAFlickrUrl']
+__all__ = ["parse_flickr_url", "UnrecognisedUrl", "NotAFlickrUrl"]
