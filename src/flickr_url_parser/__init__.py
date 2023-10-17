@@ -153,10 +153,11 @@ def parse_flickr_url(url: str):
     #
     #     https://www.flickr.com/photos/cat_tac/albums/72157666833379009
     #     https://www.flickr.com/photos/cat_tac/sets/72157666833379009
+    #     https://www.flickr.com/photos/193182355@N05/albums/72157719487919133/with/51288024275/
     #
     if (
         is_long_url
-        and len(u.path) == 4
+        and len(u.path) >= 4
         and u.path[0] == "photos"
         and u.path[2] in {"albums", "sets"}
         and u.path[3].isnumeric()
