@@ -10,6 +10,8 @@ anyio==3.7.1
     #   httpcore
 black==23.3.0
     # via -r dev_requirements.in
+bleach==6.1.0
+    # via readme-renderer
 certifi==2023.7.22
     # via
     #   httpcore
@@ -87,8 +89,6 @@ multidict==6.0.4
     # via yarl
 mypy-extensions==1.0.0
     # via black
-nh3==0.2.14
-    # via readme-renderer
 packaging==23.2
     # via
     #   black
@@ -119,8 +119,10 @@ pytest-cov==4.1.0
     # via -r dev_requirements.in
 pyyaml==6.0.1
     # via vcrpy
-readme-renderer==42.0
-    # via twine
+readme-renderer==37.3
+    # via
+    #   -r dev_requirements.in
+    #   twine
 requests==2.31.0
     # via
     #   requests-toolbelt
@@ -132,7 +134,9 @@ rfc3986==2.0.0
 rich==13.6.0
     # via twine
 six==1.16.0
-    # via vcrpy
+    # via
+    #   bleach
+    #   vcrpy
 sniffio==1.3.0
     # via
     #   anyio
@@ -156,6 +160,8 @@ urllib3==1.26.17
     #   vcrpy
 vcrpy==4.4.0
     # via -r dev_requirements.in
+webencodings==0.5.1
+    # via bleach
 werkzeug==2.2.3
     # via
     #   -r dev_requirements.in
