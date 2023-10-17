@@ -27,7 +27,7 @@ def is_page(path_component):
     return re.match(r"^page\d+$", path_component)
 
 
-def categorise_flickr_url(url: str):
+def parse_flickr_url(url: str):
     """
     Categorises a Flickr URL, e.g. whether it's a single photo, an album,
     a user.
@@ -75,7 +75,7 @@ def categorise_flickr_url(url: str):
 
     # This is for short URLs that point to:
     #
-    #     - photosets, e.g. http://flic.kr/s/aHsjybZ5ZD
+    #     - albums, e.g. http://flic.kr/s/aHsjybZ5ZD
     #     - galleries, e.g. https://flic.kr/y/2Xry4Jt
     #     - people/users, e.g. https://flic.kr/ps/ZVcni
     #
@@ -91,7 +91,7 @@ def categorise_flickr_url(url: str):
         try:
             redirected_url = str(httpx.get(url, follow_redirects=True).url)
             assert redirected_url != url
-            return categorise_flickr_url(redirected_url)
+            return parse_flickr_url(redirected_url)
         except Exception as e:
             print(e)
             pass
@@ -131,9 +131,9 @@ def categorise_flickr_url(url: str):
         and u.path[3].isnumeric()
     ):
         return {
-            "type": "photoset",
+            "type": "album",
             "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
-            "photoset_id": u.path[3],
+            "album_id": u.path[3],
         }
 
     # The URL for a user, e.g.
@@ -145,7 +145,7 @@ def categorise_flickr_url(url: str):
     #
     if is_long_url and len(u.path) == 2 and u.path[0] in ("photos", "people"):
         return {
-            "type": "people",
+            "type": "user",
             "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
         }
 
@@ -156,7 +156,7 @@ def categorise_flickr_url(url: str):
         and u.path[2] == "albums"
     ):
         return {
-            "type": "people",
+            "type": "user",
             "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
         }
 
@@ -167,7 +167,7 @@ def categorise_flickr_url(url: str):
         and is_page(u.path[2])
     ):
         return {
-            "type": "people",
+            "type": "user",
             "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
         }
 
@@ -253,3 +253,6 @@ def categorise_flickr_url(url: str):
         return {"type": "tags", "tag": u.path[2]}
 
     raise UnrecognisedUrl(f"Unrecognised URL: {url}")
+
+
+__all__ = ['parse_flickr_url', 'UnrecognisedUrl', 'NotAFlickrUrl']
