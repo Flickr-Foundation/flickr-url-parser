@@ -5,17 +5,15 @@ You enter a Flickr URL, and it tells you what sort of URL it is.
 
 Examples:
 
-```pycon
->>> from flickr_url_parser import parse_flickr_url
+```console
+$ flickr_url_parser "https://www.flickr.com/photos/sdasmarchives/50567413447"
+{"type": "single_photo", "photo_id": "50567413447"}
 
->>> parse_flickr_url('https://www.flickr.com/photos/sdasmarchives/50567413447')
-{'type': 'single_photo', 'photo_id': '50567413447'}
+$ flickr_url_parser "https://www.flickr.com/photos/aljazeeraenglish/albums/72157626164453131"
+{"type": "album", "user_url": "https://www.flickr.com/photos/aljazeeraenglish", "album_id": "72157626164453131"}
 
->>> parse_flickr_url('https://www.flickr.com/photos/aljazeeraenglish/albums/72157626164453131')
-{'type': 'album', 'user_url': 'https://www.flickr.com/photos/aljazeeraenglish', 'album_id': '72157626164453131'}
-
->>> parse_flickr_url('https://www.flickr.com/people/blueminds/')
-{'type': 'user', 'user_url': 'https://www.flickr.com/photos/blueminds'}
+$ flickr_url_parser "https://www.flickr.com/people/blueminds/"
+{"type": "user", "user_url": "https://www.flickr.com/photos/blueminds"}
 ```
 
 This was extracted as a standalone bit of functionality from [Flinumeratr], a toy that shows you a list of photos that can be viewed at a Flickr URL.
@@ -24,14 +22,35 @@ This was extracted as a standalone bit of functionality from [Flinumeratr], a to
 
 ## Usage
 
-See the examples above.
+There are two ways to use flickr_url_parser:
 
-For more information about the possible return values from the function, use the `help` function:
+1.  **As a command-line tool.**
+    Run `flickr_url_parser`, passing the Flickr URL as a single argument:
+    
+    ```console
+    $ flickr_url_parser "https://www.flickr.com/photos/sdasmarchives/50567413447"
+    {"type": "single_photo", "photo_id": "50567413447"}
+    ```
+    
+    The result will be printed as a JSON object.
+    
+    To see more information about the possible return values, run `flickr_url_parser --help`.
 
-```pycon
->>> from flickr_url_parser import parse_flickr_url
->>> help(parse_flickr_url)
-```
+2.  **As a Python library.**
+    Import the function `parse_flickr_url` and pass the Flickr URL as a single argument:
+
+    ```pycon
+    >>> from flickr_url_parser import parse_flickr_url
+
+    >>> parse_flickr_url("https://www.flickr.com/photos/sdasmarchives/50567413447")
+    {"type": "single_photo", "photo_id": "50567413447"}
+    ```
+    
+    To see more information about the possible return values, use the [`help` function](https://docs.python.org/3/library/functions.html#help):
+    
+    ```pycon
+    >>> help(parse_flickr_url)
+    ```
 
 ## Development
 

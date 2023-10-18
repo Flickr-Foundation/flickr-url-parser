@@ -35,7 +35,7 @@ def parse_flickr_url(url: str):
     The return value will be a dictionary with a key ``type`` and then some
     extra keys depending on the type, e.g.
 
-        {'type': 'single_photo', 'photo_id': '50567413447'}
+        {"type": "single_photo", "photo_id": "50567413447"}
 
     Possible values for ``type``:
 
