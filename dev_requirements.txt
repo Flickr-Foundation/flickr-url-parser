@@ -22,9 +22,7 @@ certifi==2023.7.22
 charset-normalizer==3.3.0
     # via requests
 click==8.1.7
-    # via
-    #   black
-    #   flask
+    # via black
 coverage[toml]==7.2.7
     # via
     #   -r dev_requirements.in
@@ -37,15 +35,11 @@ exceptiongroup==1.1.3
     #   pytest
 flake8==5.0.4
     # via -r dev_requirements.in
-flask==2.2.5
-    # via -r dev_requirements.in
 h11==0.14.0
     # via httpcore
 httpcore==0.17.3
     # via httpx
 httpx==0.24.1
-    # via -r dev_requirements.in
-humanize==4.6.0
     # via -r dev_requirements.in
 idna==3.4
     # via
@@ -56,29 +50,20 @@ idna==3.4
 importlib-metadata==4.2.0
     # via
     #   -r dev_requirements.in
-    #   flask
     #   keyring
     #   twine
 iniconfig==2.0.0
     # via pytest
-itsdangerous==2.1.2
-    # via flask
 jaraco-classes==3.2.3
     # via
     #   -r dev_requirements.in
     #   keyring
-jinja2==3.1.2
-    # via flask
 keyring==23.9.3
     # via twine
 markdown-it-py==2.2.0
     # via
     #   -r dev_requirements.in
     #   rich
-markupsafe==2.1.3
-    # via
-    #   jinja2
-    #   werkzeug
 mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
@@ -155,7 +140,7 @@ typing-extensions==4.7.1
     # via
     #   -r dev_requirements.in
     #   black
-urllib3==1.26.17
+urllib3==1.26.18
     # via
     #   requests
     #   twine
@@ -164,10 +149,6 @@ vcrpy==4.4.0
     # via -r dev_requirements.in
 webencodings==0.5.1
     # via bleach
-werkzeug==2.2.3
-    # via
-    #   -r dev_requirements.in
-    #   flask
 wrapt==1.15.0
     # via vcrpy
 yarl==1.9.2
