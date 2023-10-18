@@ -19,7 +19,7 @@ SOURCE = local_file("src")
 
 setuptools.setup(
     name="flickr-url-parser",
-    version="0.9.0",
+    version="1.0.0",
     author="Flickr Foundation",
     author_email="hello@flickr.org",
     readme="README.md",
@@ -51,4 +51,9 @@ setuptools.setup(
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
     ],
+    entry_points={
+        "console_scripts": [
+            "flickr_url_parser = flickr_url_parser.cli:main",
+        ]
+    },
 )
