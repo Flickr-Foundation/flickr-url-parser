@@ -2,7 +2,8 @@
 
 ## v1.1.0 - Unreleased
 
-Add the ability to run flickr_url_parser from the command line.
+*   Add the ability to run flickr_url_parser from the command line.
+*   Remove some unnecessary dependencies from `setup.py`.
 
 ## v1.0.0 - 2023-10-17
 

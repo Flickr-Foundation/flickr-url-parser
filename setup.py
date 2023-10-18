@@ -30,9 +30,7 @@ setuptools.setup(
     package_dir={"": SOURCE},
     url="https://github.com/Flickr-Foundation/flickr-url-parser",
     install_requires=[
-        "flask",
         "httpx",
-        "humanize",
         "hyperlink",
     ],
     python_requires=">=3.7",
