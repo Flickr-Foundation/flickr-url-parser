@@ -18,7 +18,21 @@ def test_it_rejects_a_url_which_isnt_flickr(url):
 
 
 @pytest.mark.parametrize(
-    "url", ["https://www.flickr.com", "https://www.flickr.com/account/email"]
+    "url",
+    [
+        "https://www.flickr.com",
+        "https://www.flickr.com/account/email",
+        # The characters in these examples are drawn from the
+        # Unicode Numeric Property Definitions:
+        # https://www.unicode.org/L2/L2012/12310-numeric-type-def.html
+        #
+        # In particular, all of these are characters that return True
+        # for Python's ``str.isnumeric()`` function, but we don't expect
+        # to see in a Flickr URL.
+        "https://www.flickr.com/photos/fractions/½⅓¼⅕⅙⅐",
+        "https://www.flickr.com/photos/circled/sets/①②③",
+        "https://www.flickr.com/photos/numerics/galleries/Ⅰ፩൲〡",
+    ],
 )
 def test_it_rejects_a_flickr_url_which_does_have_photos(url):
     with pytest.raises(UnrecognisedUrl):

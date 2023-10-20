@@ -24,7 +24,25 @@ class UnrecognisedUrl(Exception):
 
 
 def is_page(path_component):
-    return re.match(r"^page\d+$", path_component)
+    return re.match(r"^page[0-9]+$", path_component)
+
+
+def is_digits(path_component):
+    """
+    Returns True if ``path_component`` is a non-empty string of
+    digits 0-9, False otherwise.
+
+    Note: this is different from ``str.isdigit()`` or ``str.isnumeric()``,
+    both of which admit a wider range of characters that we wouldn't
+    expect to see in a Flickr URL.
+
+        >>> '①'.isdigit()
+        True
+        >>> '½'.isnumeric()
+        True
+
+    """
+    return re.match(r"^[0-9]+$", path_component)
 
 
 def parse_flickr_url(url: str):
@@ -133,7 +151,7 @@ def parse_flickr_url(url: str):
         is_long_url
         and len(u.path) >= 3
         and u.path[0] == "photos"
-        and u.path[2].isnumeric()
+        and is_digits(u.path[2])
     ):
         return {
             "type": "single_photo",
@@ -159,7 +177,7 @@ def parse_flickr_url(url: str):
         and len(u.path) == 4
         and u.path[0] == "photos"
         and u.path[2] in {"albums", "sets"}
-        and u.path[3].isnumeric()
+        and is_digits(u.path[3])
     ):
         return {
             "type": "album",
@@ -248,7 +266,7 @@ def parse_flickr_url(url: str):
         and len(u.path) >= 4
         and u.path[0] == "photos"
         and u.path[2] in {"gallery", "galleries"}
-        and u.path[3].isnumeric()
+        and is_digits(u.path[3])
     ):
         return {"type": "gallery", "gallery_id": u.path[3]}
 
