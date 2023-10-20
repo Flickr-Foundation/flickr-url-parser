@@ -52,6 +52,9 @@ There are two ways to use flickr_url_parser:
     >>> help(parse_flickr_url)
     ```
 
+Note that just because a URL can be parsed does not mean it can be *resolved* to a photo and/or photos.
+The only way to know if there are photos behind the URL is to (1) try to fetch the URL or (2) use the output from the parser to ask the Flickr API for photos.
+
 ## Development
 
 You can set up a local development environment by cloning the repo and installing dependencies:
