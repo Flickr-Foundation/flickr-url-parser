@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## NEXT - unreleased
+## v1.1.1 - 2023-10-20
 
 *   Tighten up the definition of "numeric ID" in Flickr URLs, so only something that could plausibly be a numeric ID is allowed.
 
