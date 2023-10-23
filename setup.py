@@ -19,7 +19,7 @@ SOURCE = local_file("src")
 
 setuptools.setup(
     name="flickr-url-parser",
-    version="1.1.1",
+    version="1.2.0",
     author="Flickr Foundation",
     author_email="hello@flickr.org",
     readme="README.md",
