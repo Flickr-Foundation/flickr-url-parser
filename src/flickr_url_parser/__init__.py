@@ -145,6 +145,30 @@ def parse_flickr_url(url: str):
             print(e)
             pass
 
+    # This is for "guest pass" URLs that point to:
+    #
+    #     - albums, e.g. https://www.flickr.com/gp/realphotomatt/M195SLkj98
+    #       (from https://twitter.com/PAPhotoMatt/status/1715111983974940683)
+    #     - single photos, e.g.
+    #       https://www.flickr.com/gp/199246608@N02/nSN80jZ64E
+    #       (this is one of mine)
+    #
+    # See https://www.flickrhelp.com/hc/en-us/articles/4404069601172-Create-or-delete-temporary-Guest-Passes-in-Flickr
+    #
+    # I don't think these guest pass URLs are deterministic -- they don't
+    # contain base58 encoded IDs (notice that `nSN80jZ64E` has a `0`) and
+    # the user can revoke them later.
+    #
+    # The easiest thing to do is to do an HTTP lookup.
+    if is_long_url and len(u.path) > 1 and u.path[0] == "gp":
+        try:
+            redirected_url = str(httpx.get(url, follow_redirects=True).url)
+            assert redirected_url != url
+            return parse_flickr_url(redirected_url)
+        except Exception as e:
+            print(e)
+            pass
+
     # The URL for a single photo, e.g.
     # https://www.flickr.com/photos/coast_guard/32812033543/
     if (
@@ -162,7 +186,7 @@ def parse_flickr_url(url: str):
     #
     #     https://flic.kr/p/2p4QbKN
     #
-    # Here the photo ID is a base-58 conversion of the photo ID.
+    # Here the final path component is a base-58 conversion of the photo ID.
     # See https://www.flickr.com/groups/51035612836@N01/discuss/72157616713786392/
     if is_short_url and len(u.path) == 2 and u.path[0] == "p" and is_base58(u.path[1]):
         return {"type": "single_photo", "photo_id": base58_decode(u.path[1])}

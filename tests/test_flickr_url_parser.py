@@ -231,3 +231,40 @@ def test_it_parses_a_short_flickr_url():
         "type": "single_photo",
         "photo_id": "53208249252",
     }
+
+
+# Note: Guest Pass URLs are used to give somebody access to content
+# on Flickr, even if (1) the content is private or (2) the person
+# looking at the content isn't logged in.
+#
+# We should be a bit careful about test cases here, and only use
+# Guest Pass URLs that have been shared publicly, to avoid accidentally
+# sharing a public link to somebody's private photos.
+#
+# See https://www.flickrhelp.com/hc/en-us/articles/4404078163732-Change-your-privacy-settings
+@pytest.mark.parametrize(
+    ["url", "expected"],
+    [
+        # from https://twitter.com/PAPhotoMatt/status/1715111983974940683
+        (
+            "https://www.flickr.com/gp/realphotomatt/M195SLkj98",
+            {
+                "type": "album",
+                "user_url": "https://www.flickr.com/photos/realphotomatt",
+                "album_id": "72177720312002426",
+            },
+        ),
+        # one of mine (Alex's)
+        (
+            "https://www.flickr.com/gp/199246608@N02/nSN80jZ64E",
+            {"type": "single_photo", "photo_id": "53279364618"},
+        ),
+    ],
+)
+def test_it_parses_guest_pass_urls(vcr_cassette, url, expected):
+    assert parse_flickr_url(url) == expected
+
+
+def test_it_doesnt_parse_a_broken_guest_pass_url(vcr_cassette):
+    with pytest.raises(UnrecognisedUrl):
+        parse_flickr_url(url="https://www.flickr.com/gp/1234/doesnotexist")
