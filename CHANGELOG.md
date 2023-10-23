@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v1.2.0 - 2023-10-23
+## v1.2.1 - 2023-10-23
 
 *   Add support for Flickr Guest Pass URLs, e.g. `https://www.flickr.com/gp/realphotomatt/M195SLkj98`
 
