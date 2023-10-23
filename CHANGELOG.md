@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.2.0 - UNRELEASED
+
+*   Add support for Flickr Guest Pass URLs, e.g. `https://www.flickr.com/gp/realphotomatt/M195SLkj98`
+
 ## v1.1.1 - 2023-10-20
 
 *   Tighten up the definition of "numeric ID" in Flickr URLs, so only something that could plausibly be a numeric ID is allowed.
