@@ -89,6 +89,10 @@ To create a new version on PyPI:
     
     You will need [a PyPI API token](https://pypi.org/help/#apitoken) to publish packages.
 
+## References
+
+-   https://www.flickr.com/services/api/misc.urls.html
+
 ## License
 
 This project is dual-licensed as Apache-2.0 and MIT.
