@@ -89,9 +89,9 @@ To create a new version on PyPI:
     
     You will need [a PyPI API token](https://pypi.org/help/#apitoken) to publish packages.
 
-## References
+## Useful reading
 
--   https://www.flickr.com/services/api/misc.urls.html
+-   Photo Image URLs in the Flickr docs: <https://www.flickr.com/services/api/misc.urls.html>
 
 ## License
 
