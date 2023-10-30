@@ -10,6 +10,7 @@ black<23.7.0
 coverage<7.3.0
 flake8<6
 httpx<0.25.0
+mypy<1.5
 vcrpy<5
 
 # Version pins for 3.7 for things we don't depend on directly, but are
