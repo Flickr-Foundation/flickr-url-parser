@@ -23,11 +23,15 @@ class UnrecognisedUrl(Exception):
     pass
 
 
-def is_page(path_component):
-    return re.match(r"^page[0-9]+$", path_component)
+def is_page(path_component: str) -> bool:
+    """
+    Returns True if a path component looks like pagination in a Flickr URL,
+    False otherwise.
+    """
+    return re.match(r"^page[0-9]+$", path_component) is not None
 
 
-def is_digits(path_component):
+def is_digits(path_component: str) -> bool:
     """
     Returns True if ``path_component`` is a non-empty string of
     digits 0-9, False otherwise.
@@ -42,7 +46,7 @@ def is_digits(path_component):
         True
 
     """
-    return re.match(r"^[0-9]+$", path_component)
+    return re.match(r"^[0-9]+$", path_component) is not None
 
 
 def parse_flickr_url(url: str):

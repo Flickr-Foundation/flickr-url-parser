@@ -5,14 +5,14 @@ A couple of functions related to base58 encoding, which is used for Flickr's sho
 BASE58_ALPHABET = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
 
 
-def is_base58(num):
+def is_base58(num: str) -> bool:
     """
     Returns True if a string looks like a base58-encoded value, false otherwise.
     """
     return all(digit in BASE58_ALPHABET for digit in num)
 
 
-def base58_decode(num):
+def base58_decode(num: str) -> str:
     """
     Do a base58 decoding of a string, as used in flic.kr-style photo URLs.
     """
