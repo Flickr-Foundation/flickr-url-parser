@@ -7,3 +7,6 @@ source =
 [report]
 show_missing = true
 fail_under = 100
+exclude_also =
+  from typing import
+  from typing_extensions import
