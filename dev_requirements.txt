@@ -74,8 +74,12 @@ more-itertools==9.1.0
     #   jaraco-classes
 multidict==6.0.4
     # via yarl
+mypy==1.4.1
+    # via -r dev_requirements.in
 mypy-extensions==1.0.0
-    # via black
+    # via
+    #   black
+    #   mypy
 packaging==23.2
     # via
     #   black
@@ -133,6 +137,7 @@ tomli==2.0.1
     # via
     #   black
     #   coverage
+    #   mypy
     #   pytest
 twine==4.0.2
     # via -r dev_requirements.in
@@ -140,6 +145,7 @@ typing-extensions==4.7.1
     # via
     #   -r dev_requirements.in
     #   black
+    #   mypy
 urllib3==1.26.18
     # via
     #   requests

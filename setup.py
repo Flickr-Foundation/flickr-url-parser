@@ -32,6 +32,8 @@ setuptools.setup(
     install_requires=[
         "httpx",
         "hyperlink",
+        # See https://mypy.readthedocs.io/en/stable/runtime_troubles.html#using-new-additions-to-the-typing-module
+        'typing_extensions; python_version<"3.8"',
     ],
     python_requires=">=3.7",
     project_urls={

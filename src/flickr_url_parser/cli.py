@@ -1,3 +1,5 @@
+from typing import List
+
 import json
 import sys
 import textwrap
@@ -5,7 +7,7 @@ import textwrap
 from flickr_url_parser import parse_flickr_url
 
 
-def run_cli(argv):
+def run_cli(argv: List[str]) -> int:
     try:
         url = argv[1]
     except IndexError:
@@ -13,13 +15,13 @@ def run_cli(argv):
         return 1
 
     if url == "--help":
-        print(textwrap.dedent(parse_flickr_url.__doc__).strip())
+        print(textwrap.dedent(parse_flickr_url.__doc__).strip())  # type: ignore[arg-type]
         return 0
     else:
         print(json.dumps(parse_flickr_url(url)))
         return 0
 
 
-def main():  # pragma: no cover
+def main() -> None:  # pragma: no cover
     rc = run_cli(argv=sys.argv)
     sys.exit(rc)
