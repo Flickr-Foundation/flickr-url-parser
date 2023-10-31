@@ -4,6 +4,7 @@ import httpx
 import hyperlink
 
 from flickr_url_parser.base58 import is_base58, base58_decode
+from flickr_url_parser.types import ParseResult
 
 
 class NotAFlickrUrl(Exception):
@@ -49,7 +50,7 @@ def is_digits(path_component: str) -> bool:
     return re.match(r"^[0-9]+$", path_component) is not None
 
 
-def parse_flickr_url(url: str):
+def parse_flickr_url(url: str) -> ParseResult:
     """
     Parse a Flickr URL and return some key information, e.g. whether it's
     a single photo, an album, a user.
