@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.2.2 - 2023-10-31
+
+*   Add type hints that can be used for type checking with mypy and similar tools.
+
 ## v1.2.1 - 2023-10-23
 
 *   Add support for Flickr Guest Pass URLs, e.g. `https://www.flickr.com/gp/realphotomatt/M195SLkj98`
