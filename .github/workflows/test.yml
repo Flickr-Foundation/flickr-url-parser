@@ -27,8 +27,8 @@ jobs:
         pip install -e .
     - name: Check types
       run: |
+        mypy src tests
         mypy --disallow-untyped-defs src
-        mypy tests
     - name: Run linting
       run: |
         black --check .
