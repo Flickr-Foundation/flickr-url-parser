@@ -1,9 +1,10 @@
+import sys
 from typing import TypedDict, Union
 
-try:
-    from typing import Literal
-except ImportError as e:  # Python 3.7
+if sys.version_info >= (3, 8):
     from typing_extensions import Literal
+else:
+    from typing import Literal
 
 
 class SinglePhoto(TypedDict):
