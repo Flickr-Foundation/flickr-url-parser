@@ -1,12 +1,12 @@
 import sys
-from typing import TypedDict, Union
+from typing import Union
 
 # See https://mypy.readthedocs.io/en/stable/runtime_troubles.html#using-new-additions-to-the-typing-module
 # See https://github.com/python/mypy/issues/8520
 if sys.version_info >= (3, 8):
-    from typing_extensions import Literal
+    from typing_extensions import Literal, TypedDict
 else:
-    from typing import Literal
+    from typing import Literal, TypedDict
 
 
 class SinglePhoto(TypedDict):
