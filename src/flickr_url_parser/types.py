@@ -3,7 +3,7 @@ from typing import Union
 
 # See https://mypy.readthedocs.io/en/stable/runtime_troubles.html#using-new-additions-to-the-typing-module
 # See https://github.com/python/mypy/issues/8520
-if sys.version_info >= (3, 8):
+if sys.version_info >= (3, 8):  # pragma: no cover
     from typing import Literal, TypedDict
 else:  # pragma: no cover
     from typing_extensions import Literal, TypedDict
