@@ -77,6 +77,7 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url):
         ),
         ("https://www.flickr.com/photos/11588490@n02/2174280796/sizes/l", "2174280796"),
         ("https://www.flickr.com/photos/nrcs_south_dakota/8023844010/in", "8023844010"),
+        ("https://www.flickr.com/photos/94631446@N03/with/12121355904/", "12121355904"),
     ],
 )
 def test_it_parses_a_single_photo(url, photo_id):
@@ -87,18 +88,36 @@ def test_it_parses_a_single_photo(url, photo_id):
 
 
 @pytest.mark.parametrize(
-    "url",
+    ("url", "expected"),
     [
-        "https://www.flickr.com/photos/cat_tac/albums/72157666833379009",
-        "https://www.flickr.com/photos/cat_tac/sets/72157666833379009",
+        (
+            "https://www.flickr.com/photos/cat_tac/albums/72157666833379009",
+            {
+                "type": "album",
+                "user_url": "https://www.flickr.com/photos/cat_tac",
+                "album_id": "72157666833379009",
+            },
+        ),
+        (
+            "https://www.flickr.com/photos/cat_tac/sets/72157666833379009",
+            {
+                "type": "album",
+                "user_url": "https://www.flickr.com/photos/cat_tac",
+                "album_id": "72157666833379009",
+            },
+        ),
+        (
+            "https://www.flickr.com/photos/193182355@N05/albums/72157719487919133/with/51288024275/",
+            {
+                "type": "album",
+                "user_url": "https://www.flickr.com/photos/193182355@N05",
+                "album_id": "72157719487919133",
+            },
+        ),
     ],
 )
-def test_it_parses_an_album(url):
-    assert parse_flickr_url(url) == {
-        "type": "album",
-        "user_url": "https://www.flickr.com/photos/cat_tac",
-        "album_id": "72157666833379009",
-    }
+def test_it_parses_an_album(url, expected):
+    assert parse_flickr_url(url) == expected
 
 
 @pytest.mark.parametrize(

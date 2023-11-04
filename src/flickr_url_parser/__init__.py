@@ -196,14 +196,34 @@ def parse_flickr_url(url: str) -> ParseResult:
     if is_short_url and len(u.path) == 2 and u.path[0] == "p" and is_base58(u.path[1]):
         return {"type": "single_photo", "photo_id": base58_decode(u.path[1])}
 
+    # The URL for a single photo in the context of a user's photo stream
+    #
+    #     https://www.flickr.com/photos/94631446@N03/with/12121355904/
+    #
+    # When you open this page in your browser, you get shown the user's
+    # photo stream scrolled to this photo -- it's sometimes used in
+    # Wikimedia Commons data to mean "this photo".
+    if (
+        is_long_url
+        and len(u.path) == 4
+        and u.path[0] == "photos"
+        and u.path[2] == "with"
+        and u.path[3].isnumeric()
+    ):
+        return {
+            "type": "single_photo",
+            "photo_id": u.path[3],
+        }
+
     # The URL for an album, e.g.
     #
     #     https://www.flickr.com/photos/cat_tac/albums/72157666833379009
     #     https://www.flickr.com/photos/cat_tac/sets/72157666833379009
+    #     https://www.flickr.com/photos/193182355@N05/albums/72157719487919133/with/51288024275/
     #
     if (
         is_long_url
-        and len(u.path) == 4
+        and len(u.path) >= 4
         and u.path[0] == "photos"
         and u.path[2] in {"albums", "sets"}
         and is_digits(u.path[3])
