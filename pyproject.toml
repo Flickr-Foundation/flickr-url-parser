@@ -42,11 +42,14 @@ dynamic = ["version"]
 [project.scripts]
 flickr_url_parser = "flickr_url_parser.cli:main"
 
+[tool.setuptools.dynamic]
+version = {attr = "flickr_url_parser.__version__"}
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-mypkg = ["py.typed"]
+flickr_url_parser = ["py.typed"]
 
 [tool.coverage.run]
 branch = true

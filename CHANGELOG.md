@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.2.3 - 2023-11-05
+
+*   Actually make the type hints available by adding the `py.typed` file.
+
 ## v1.2.2 - 2023-10-31
 
 *   Add type hints that can be used for type checking with mypy and similar tools.
