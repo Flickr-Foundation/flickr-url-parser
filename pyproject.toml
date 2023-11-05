@@ -1,0 +1,69 @@
+[build-system]
+requires = [
+    "setuptools >= 65",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flickr-url-parser"
+description = "Enter a Flickr URL, and find out what sort of URL it is (single photo, album, gallery, etc.)"
+readme = "README.md"
+keywords = ["flickr"]
+authors = [
+  {name = "Flickr Foundation", email = "hello@flickr.org"},
+]
+maintainers = [
+  {name = "Alex Chan", email="alex@flickr.org"},
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: Apache Software License",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.7"
+dependencies = [
+  "httpx",
+  "hyperlink",
+  # See https://mypy.readthedocs.io/en/stable/runtime_troubles.html#using-new-additions-to-the-typing-module
+  'typing_extensions; python_version<"3.8"',
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/Flickr-Foundation/flickr-url-parser"
+"Changelog" = "https://github.com/Flickr-Foundation/flickr-url-parser/blob/main/CHANGELOG.md"
+
+[project.scripts]
+flickr_url_parser = "flickr_url_parser.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+mypkg = ["py.typed"]
+
+[tool.coverage.run]
+branch = true
+source = [
+  "flickr_url_parser",
+  "tests",
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
+exclude_also = [
+  "from typing import",
+  "from typing_extensions import",
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "error",
+]

@@ -4,7 +4,7 @@ import json
 import sys
 import textwrap
 
-from flickr_url_parser import parse_flickr_url
+from flickr_url_parser import parse_flickr_url, __version__
 
 
 def run_cli(argv: List[str]) -> int:
@@ -16,6 +16,9 @@ def run_cli(argv: List[str]) -> int:
 
     if url == "--help":
         print(textwrap.dedent(parse_flickr_url.__doc__).strip())  # type: ignore[arg-type]
+        return 0
+    elif url == "--version":
+        print(f"flickr_url_parser {__version__}")
         return 0
     else:
         print(json.dumps(parse_flickr_url(url)))
