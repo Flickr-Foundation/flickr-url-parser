@@ -6,7 +6,7 @@ import hyperlink
 from flickr_url_parser.base58 import is_base58, base58_decode
 from flickr_url_parser.types import ParseResult
 
-__version__ = "1.2.2"
+__version__ = "1.2.3"
 
 
 class NotAFlickrUrl(Exception):

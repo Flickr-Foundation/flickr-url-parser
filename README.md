@@ -83,11 +83,12 @@ To create a new version on PyPI:
 3.  Deploy the release using twine:
 
     ```console
-    $ python3 setup.py sdist
+    $ python3 -m build
     $ python3 -m twine upload dist/* --username=__token__
     ```
     
     You will need [a PyPI API token](https://pypi.org/help/#apitoken) to publish packages.
+    This token is stored in 1Password.
 
 ## Useful reading
 
