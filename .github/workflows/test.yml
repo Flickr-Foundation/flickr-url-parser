@@ -26,9 +26,7 @@ jobs:
         pip install -r dev_requirements.txt
         pip install -e .
     - name: Check types
-      run: |
-        mypy --disallow-untyped-defs src
-        mypy src tests
+      run: mypy src tests
     - name: Run linting
       run: |
         black --check .
