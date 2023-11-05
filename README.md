@@ -78,7 +78,7 @@ $ coverage report
 
 To create a new version on PyPI:
 
-1.  Update the version in `setup.py`
+1.  Update the version in `src/flickr_url_parser/__init__.py`
 2.  Add release notes in `CHANGELOG.md` and push a new tag to GitHub
 3.  Deploy the release using twine:
 
