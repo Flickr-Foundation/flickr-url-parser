@@ -62,3 +62,8 @@ exclude_also = [
   "from typing import",
   "from typing_extensions import",
 ]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "error",
+]
