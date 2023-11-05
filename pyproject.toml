@@ -47,3 +47,18 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 mypkg = ["py.typed"]
+
+[tool.coverage.run]
+branch = true
+source = [
+  "flickr_url_parser",
+  "tests",
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
+exclude_also = [
+  "from typing import",
+  "from typing_extensions import",
+]
