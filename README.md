@@ -76,6 +76,15 @@ $ coverage run -m pytest tests
 $ coverage report
 ```
 
+To make changes to the library:
+
+1.  Create a new branch
+2.  Push your changes to GitHub
+3.  Open a pull request
+4.  Fix any issues flagged by GitHub Actions (including tests, code linting, and type checking)
+5.  Ask somebody to review your change
+6.  Merge it!
+
 To create a new version on PyPI:
 
 1.  Update the version in `src/flickr_url_parser/__init__.py`
