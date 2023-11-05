@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.2.4 - 2023-11-05
+
+*   Explicitly export the `ParseResult` type.
+
 ## v1.2.3 - 2023-11-05
 
 *   Actually make the type hints available by adding the `py.typed` file.

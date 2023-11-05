@@ -6,7 +6,7 @@ import hyperlink
 from flickr_url_parser.base58 import is_base58, base58_decode
 from flickr_url_parser._types import ParseResult
 
-__version__ = "1.2.3"
+__version__ = "1.2.4"
 
 
 class NotAFlickrUrl(Exception):
@@ -326,4 +326,4 @@ def parse_flickr_url(url: str) -> ParseResult:
     raise UnrecognisedUrl(f"Unrecognised URL: {url}")
 
 
-__all__ = ["parse_flickr_url", "UnrecognisedUrl", "NotAFlickrUrl"]
+__all__ = ["parse_flickr_url", "UnrecognisedUrl", "NotAFlickrUrl", "ParseResult"]
