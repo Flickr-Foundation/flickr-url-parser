@@ -31,6 +31,16 @@ def test_run_cli_shows_help(capsys):
     assert captured.err == ""
 
 
+def test_run_cli_shows_version(capsys):
+    rc = run_cli(argv=["flickr_url_parser", "--version"])
+
+    assert rc == 0
+
+    captured = capsys.readouterr()
+    assert captured.out.startswith("flickr_url_parser 1.")
+    assert captured.err == ""
+
+
 def test_run_cli_throws_err(capsys):
     rc = run_cli(argv=["flickr_url_parser"])
 
