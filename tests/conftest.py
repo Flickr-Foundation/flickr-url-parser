@@ -1,9 +1,12 @@
+from typing import Generator
+
 import pytest
+from pytest import FixtureRequest
 import vcr
 
 
 @pytest.fixture(scope="function")
-def cassette_name(request):
+def cassette_name(request: FixtureRequest) -> str:
     # By default we use the name of the test as the cassette name,
     # but if it's a test parametrised with @pytest.mark.parametrize,
     # we include the parameter name to distinguish cassettes.
@@ -18,7 +21,7 @@ def cassette_name(request):
 
 
 @pytest.fixture(scope="function")
-def vcr_cassette(cassette_name):
+def vcr_cassette(cassette_name: str) -> Generator[None, None, None]:
     """
     Creates a VCR cassette for use in tests.
 

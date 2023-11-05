@@ -1,9 +1,11 @@
 import json
 
+from pytest import CaptureFixture
+
 from flickr_url_parser.cli import run_cli
 
 
-def test_run_cli(capsys):
+def test_run_cli(capsys: CaptureFixture[str]) -> None:
     rc = run_cli(
         argv=[
             "flickr_url_parser",
@@ -21,7 +23,7 @@ def test_run_cli(capsys):
     assert captured.err == ""
 
 
-def test_run_cli_shows_help(capsys):
+def test_run_cli_shows_help(capsys: CaptureFixture[str]) -> None:
     rc = run_cli(argv=["flickr_url_parser", "--help"])
 
     assert rc == 0
@@ -31,7 +33,7 @@ def test_run_cli_shows_help(capsys):
     assert captured.err == ""
 
 
-def test_run_cli_shows_version(capsys):
+def test_run_cli_shows_version(capsys: CaptureFixture[str]) -> None:
     rc = run_cli(argv=["flickr_url_parser", "--version"])
 
     assert rc == 0
@@ -41,7 +43,7 @@ def test_run_cli_shows_version(capsys):
     assert captured.err == ""
 
 
-def test_run_cli_throws_err(capsys):
+def test_run_cli_throws_err(capsys: CaptureFixture[str]) -> None:
     rc = run_cli(argv=["flickr_url_parser"])
 
     assert rc == 1
