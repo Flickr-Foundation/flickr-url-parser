@@ -106,8 +106,8 @@ def test_it_parses_an_album(url: str) -> None:
 @pytest.mark.parametrize(
     "url",
     [
-        "http://flic.kr/s/aHsjybZ5ZD",
-        "https://flic.kr/s/aHsjybZ5ZD",
+        pytest.param("http://flic.kr/s/aHsjybZ5ZD", id="http-aHsjybZ5ZD"),
+        pytest.param("https://flic.kr/s/aHsjybZ5ZD", id="https-aHsjybZ5ZD"),
     ],
 )
 def test_it_parses_a_short_album_url(vcr_cassette: str, url: str) -> None:
@@ -121,8 +121,8 @@ def test_it_parses_a_short_album_url(vcr_cassette: str, url: str) -> None:
 @pytest.mark.parametrize(
     "url",
     [
-        "http://flic.kr/s/---",
-        "https://flic.kr/s/aaaaaaaaaaaaa",
+        pytest.param("http://flic.kr/s/---", id="dashes"),
+        pytest.param("https://flic.kr/s/aaaaaaaaaaaaa", id="aaaaaaaaaaaaa"),
     ],
 )
 def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: str, url: str) -> None:
@@ -158,7 +158,7 @@ def test_it_parses_a_short_user_url(vcr_cassette: str) -> None:
     [
         "https://flic.kr/ps",
         "https://flic.kr/ps/ZVcni/extra-bits",
-        "https://flic.kr/ps/ZZZZZZZZZ",
+        pytest.param("https://flic.kr/ps/ZZZZZZZZZ", id="ZZZZZZZZZ"),
     ],
 )
 def test_it_doesnt_parse_bad_short_user_urls(vcr_cassette: str, url: str) -> None:
@@ -197,7 +197,11 @@ def test_it_parses_a_gallery(url: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "url", ["https://flic.kr/y/2Xry4Jt", "http://flic.kr/y/2Xry4Jt"]
+    "url",
+    [
+        pytest.param("https://flic.kr/y/2Xry4Jt", id="https-2Xry4Jt"),
+        pytest.param("http://flic.kr/y/2Xry4Jt", id="http-2Xry4Jt"),
+    ],
 )
 def test_it_parses_a_short_gallery(vcr_cassette: str, url: str) -> None:
     assert parse_flickr_url(url) == {
@@ -207,7 +211,11 @@ def test_it_parses_a_short_gallery(vcr_cassette: str, url: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "url", ["https://flic.kr/y/222222222222", "http://flic.kr/y/!!!"]
+    "url",
+    [
+        pytest.param("https://flic.kr/y/222222222222", id="222222222222"),
+        "http://flic.kr/y/!!!",
+    ],
 )
 def test_it_doesnt_parse_bad_short_gallery_urls(vcr_cassette: str, url: str) -> None:
     with pytest.raises(UnrecognisedUrl):
@@ -248,18 +256,20 @@ def test_it_parses_a_short_flickr_url() -> None:
     ["url", "expected"],
     [
         # from https://twitter.com/PAPhotoMatt/status/1715111983974940683
-        (
+        pytest.param(
             "https://www.flickr.com/gp/realphotomatt/M195SLkj98",
             {
                 "type": "album",
                 "user_url": "https://www.flickr.com/photos/realphotomatt",
                 "album_id": "72177720312002426",
             },
+            id="M195SLkj98",
         ),
         # one of mine (Alex's)
-        (
+        pytest.param(
             "https://www.flickr.com/gp/199246608@N02/nSN80jZ64E",
             {"type": "single_photo", "photo_id": "53279364618"},
+            id="nSN80jZ64E",
         ),
     ],
 )
