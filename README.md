@@ -10,9 +10,9 @@ $ flickr_url_parser "https://www.flickr.com/photos/sdasmarchives/50567413447"
 {"type": "single_photo", "photo_id": "50567413447"}
 
 $ flickr_url_parser "https://www.flickr.com/photos/aljazeeraenglish/albums/72157626164453131"
-{"type": "album", "user_url": "https://www.flickr.com/photos/aljazeeraenglish", "album_id": "72157626164453131"}
+{"type": "album", "user_url": "https://www.flickr.com/photos/aljazeeraenglish", "album_id": "72157626164453131", "page": 1}
 
-$ flickr_url_parser "https://www.flickr.com/people/blueminds/"
+$ flickr_url_parser "https://www.flickr.com/photos/blueminds/page3"
 {"type": "user", "user_url": "https://www.flickr.com/photos/blueminds"}
 ```
 
@@ -26,14 +26,14 @@ There are two ways to use flickr_url_parser:
 
 1.  **As a command-line tool.**
     Run `flickr_url_parser`, passing the Flickr URL as a single argument:
-    
+
     ```console
     $ flickr_url_parser "https://www.flickr.com/photos/sdasmarchives/50567413447"
     {"type": "single_photo", "photo_id": "50567413447"}
     ```
-    
+
     The result will be printed as a JSON object.
-    
+
     To see more information about the possible return values, run `flickr_url_parser --help`.
 
 2.  **As a Python library.**
@@ -45,9 +45,9 @@ There are two ways to use flickr_url_parser:
     >>> parse_flickr_url("https://www.flickr.com/photos/sdasmarchives/50567413447")
     {"type": "single_photo", "photo_id": "50567413447"}
     ```
-    
+
     To see more information about the possible return values, use the [`help` function](https://docs.python.org/3/library/functions.html#help):
-    
+
     ```pycon
     >>> help(parse_flickr_url)
     ```
@@ -95,7 +95,7 @@ To create a new version on PyPI:
     $ python3 -m build
     $ python3 -m twine upload dist/* --username=__token__
     ```
-    
+
     You will need [a PyPI API token](https://pypi.org/help/#apitoken) to publish packages.
     This token is stored in 1Password.
 

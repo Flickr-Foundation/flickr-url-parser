@@ -2,7 +2,7 @@
 
 ## v1.3.0 - 2023-11-09
 
-*   Add support for pagination.
+*   Add support for pagination.  All collection URLs (albums, users, groups, galleries and tags) now include a `page` parameter that tells you what page you've navigated to in the Flickr UI.
 
 ## v1.2.4 - 2023-11-05
 
