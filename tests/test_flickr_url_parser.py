@@ -7,7 +7,7 @@ from flickr_url_parser import (
     NotAFlickrUrl,
     UnrecognisedUrl,
 )
-from flickr_url_parser._types import Album
+from flickr_url_parser._types import Album, Group
 
 
 @pytest.mark.parametrize(
@@ -39,6 +39,8 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "https://www.flickr.com/photos/fractions/½⅓¼⅕⅙⅐",
         "https://www.flickr.com/photos/circled/sets/①②③",
         "https://www.flickr.com/photos/numerics/galleries/Ⅰ፩൲〡",
+        # A discussion page for a group
+        "https://www.flickr.com/groups/slovenia/discuss/",
     ],
 )
 def test_it_rejects_a_flickr_url_which_does_have_photos(url: str) -> None:
@@ -163,13 +165,21 @@ def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: str, url: str) -> No
         "https://www.flickr.com/photos/blueminds/",
         "https://www.flickr.com/people/blueminds/",
         "https://www.flickr.com/photos/blueminds/albums",
-        "https://www.flickr.com/photos/blueminds/page3",
     ],
 )
 def test_it_parses_a_user(url: str) -> None:
     assert parse_flickr_url(url) == {
         "type": "user",
         "user_url": "https://www.flickr.com/photos/blueminds",
+        "page": 1,
+    }
+
+
+def test_it_gets_page_information_about_user_urls() -> None:
+    assert parse_flickr_url("https://www.flickr.com/photos/blueminds/page3") == {
+        "type": "user",
+        "user_url": "https://www.flickr.com/photos/blueminds",
+        "page": 3,
     }
 
 
@@ -177,6 +187,7 @@ def test_it_parses_a_short_user_url(vcr_cassette: str) -> None:
     assert parse_flickr_url("https://flic.kr/ps/ZVcni") == {
         "type": "user",
         "user_url": "https://www.flickr.com/photos/astrosamantha",
+        "page": 1,
     }
 
 
@@ -194,18 +205,36 @@ def test_it_doesnt_parse_bad_short_user_urls(vcr_cassette: str, url: str) -> Non
 
 
 @pytest.mark.parametrize(
-    "url",
+    ["url", "group"],
     [
-        "https://www.flickr.com/groups/slovenia/pool/",
-        "https://www.flickr.com/groups/slovenia/",
-        "https://www.flickr.com/groups/slovenia/pool/page30",
+        (
+            "https://www.flickr.com/groups/slovenia/pool/",
+            {
+                "type": "group",
+                "group_url": "https://www.flickr.com/groups/slovenia",
+                "page": 1,
+            },
+        ),
+        (
+            "https://www.flickr.com/groups/slovenia/",
+            {
+                "type": "group",
+                "group_url": "https://www.flickr.com/groups/slovenia",
+                "page": 1,
+            },
+        ),
+        (
+            "https://www.flickr.com/groups/slovenia/pool/page30",
+            {
+                "type": "group",
+                "group_url": "https://www.flickr.com/groups/slovenia",
+                "page": 30,
+            },
+        ),
     ],
 )
-def test_it_parses_a_group(url: str) -> None:
-    assert parse_flickr_url(url) == {
-        "type": "group",
-        "group_url": "https://www.flickr.com/groups/slovenia",
-    }
+def test_it_parses_a_group(url: str, group: Group) -> None:
+    assert parse_flickr_url(url) == group
 
 
 @pytest.mark.parametrize(
@@ -310,9 +339,3 @@ def test_it_parses_guest_pass_urls(
 def test_it_doesnt_parse_a_broken_guest_pass_url(vcr_cassette: str) -> None:
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url="https://www.flickr.com/gp/1234/doesnotexist")
-
-
-# @pytest.mark.parametrize(["url", "expected"], [
-#
-# ])
-# def test_it_parses_pagination_parameters()

@@ -24,11 +24,13 @@ class Album(TypedDict):
 class User(TypedDict):
     type: Literal["user"]
     user_url: str
+    page: int
 
 
 class Group(TypedDict):
     type: Literal["group"]
     group_url: str
+    page: int
 
 
 class Gallery(TypedDict):
