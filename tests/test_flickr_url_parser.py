@@ -2,7 +2,12 @@ from typing import Dict
 
 import pytest
 
-from flickr_url_parser import parse_flickr_url, NotAFlickrUrl, UnrecognisedUrl
+from flickr_url_parser import (
+    parse_flickr_url,
+    NotAFlickrUrl,
+    UnrecognisedUrl,
+)
+from flickr_url_parser._types import Album
 
 
 @pytest.mark.parametrize(
@@ -89,18 +94,39 @@ def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "url",
+    ["url", "album"],
     [
-        "https://www.flickr.com/photos/cat_tac/albums/72157666833379009",
-        "https://www.flickr.com/photos/cat_tac/sets/72157666833379009",
+        (
+            "https://www.flickr.com/photos/cat_tac/albums/72157666833379009",
+            {
+                "type": "album",
+                "user_url": "https://www.flickr.com/photos/cat_tac",
+                "album_id": "72157666833379009",
+                "page": 1,
+            },
+        ),
+        (
+            "https://www.flickr.com/photos/cat_tac/sets/72157666833379009",
+            {
+                "type": "album",
+                "user_url": "https://www.flickr.com/photos/cat_tac",
+                "album_id": "72157666833379009",
+                "page": 1,
+            },
+        ),
+        (
+            "https://www.flickr.com/photos/andygocher/albums/72157648252420622/page3",
+            {
+                "type": "album",
+                "user_url": "https://www.flickr.com/photos/andygocher",
+                "album_id": "72157648252420622",
+                "page": 3,
+            },
+        ),
     ],
 )
-def test_it_parses_an_album(url: str) -> None:
-    assert parse_flickr_url(url) == {
-        "type": "album",
-        "user_url": "https://www.flickr.com/photos/cat_tac",
-        "album_id": "72157666833379009",
-    }
+def test_it_parses_an_album(url: str, album: Album) -> None:
+    assert parse_flickr_url(url) == album
 
 
 @pytest.mark.parametrize(
@@ -115,6 +141,7 @@ def test_it_parses_a_short_album_url(vcr_cassette: str, url: str) -> None:
         "type": "album",
         "user_url": "https://www.flickr.com/photos/64527945@N07",
         "album_id": "72157628959784871",
+        "page": 1,
     }
 
 
@@ -262,6 +289,7 @@ def test_it_parses_a_short_flickr_url() -> None:
                 "type": "album",
                 "user_url": "https://www.flickr.com/photos/realphotomatt",
                 "album_id": "72177720312002426",
+                "page": 1,
             },
             id="M195SLkj98",
         ),
@@ -282,3 +310,9 @@ def test_it_parses_guest_pass_urls(
 def test_it_doesnt_parse_a_broken_guest_pass_url(vcr_cassette: str) -> None:
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url="https://www.flickr.com/gp/1234/doesnotexist")
+
+
+# @pytest.mark.parametrize(["url", "expected"], [
+#
+# ])
+# def test_it_parses_pagination_parameters()

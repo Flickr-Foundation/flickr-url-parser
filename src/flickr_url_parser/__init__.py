@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 
 import httpx
 import hyperlink
@@ -26,12 +27,38 @@ class UnrecognisedUrl(Exception):
     pass
 
 
+def get_page(path_component: str) -> Optional[int]:
+    """
+    Flickr does pagination by appending a `pageXX` component to the end of URLs, e.g.
+
+        https://www.flickr.com/photos/belindavick/
+        https://www.flickr.com/photos/belindavick/page2
+        https://www.flickr.com/photos/belindavick/page3
+
+    This returns the page number for a path component (if the URL is paginated) or
+    None otherwise.
+
+        >>> get_page('page3')
+        3
+
+        >>> get_page('189071208712')
+        None
+
+    """
+    m = re.match(r"^page([0-9]+)$", path_component)
+
+    if m is None:
+        return None
+
+    return int(m.group(1))
+
+
 def is_page(path_component: str) -> bool:
     """
     Returns True if a path component looks like pagination in a Flickr URL,
     False otherwise.
     """
-    return re.match(r"^page[0-9]+$", path_component) is not None
+    return get_page(path_component) is not None
 
 
 def is_digits(path_component: str) -> bool:
@@ -202,18 +229,25 @@ def parse_flickr_url(url: str) -> ParseResult:
     #
     #     https://www.flickr.com/photos/cat_tac/albums/72157666833379009
     #     https://www.flickr.com/photos/cat_tac/sets/72157666833379009
+    #     https://www.flickr.com/photos/andygocher/albums/72157648252420622/page3
     #
     if (
         is_long_url
-        and len(u.path) == 4
+        and len(u.path) >= 4
         and u.path[0] == "photos"
         and u.path[2] in {"albums", "sets"}
         and is_digits(u.path[3])
     ):
+        if len(u.path) == 5 and is_page(u.path[-1]):
+            page_number = get_page(u.path[-1])
+        else:
+            page_number = 1
+
         return {
             "type": "album",
             "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
             "album_id": u.path[3],
+            "page": page_number,
         }
 
     # The URL for a user, e.g.

@@ -18,6 +18,7 @@ class Album(TypedDict):
     type: Literal["album"]
     user_url: str
     album_id: str
+    page: int
 
 
 class User(TypedDict):
