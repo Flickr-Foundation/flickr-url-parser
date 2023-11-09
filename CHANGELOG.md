@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.3.0 - 2023-11-09
+
+*   Add support for pagination.
+
 ## v1.2.4 - 2023-11-05
 
 *   Explicitly export the `ParseResult` type.
