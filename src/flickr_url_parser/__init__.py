@@ -6,7 +6,7 @@ import hyperlink
 from flickr_url_parser.base58 import is_base58, base58_decode
 from flickr_url_parser._types import ParseResult
 
-__version__ = "1.2.4"
+__version__ = "1.3.0"
 
 
 class NotAFlickrUrl(Exception):
@@ -24,6 +24,35 @@ class UnrecognisedUrl(Exception):
     """
 
     pass
+
+
+def get_page(url: hyperlink.URL) -> int:
+    """
+    Flickr does pagination by appending a `pageXX` component to the end of URLs, e.g.
+
+        https://www.flickr.com/photos/belindavick/
+        https://www.flickr.com/photos/belindavick/page2
+        https://www.flickr.com/photos/belindavick/page3
+
+    This returns the page number for a path component.  It assumes that this is
+    a valid pagination parameter.
+
+        >>> get_page('https://www.flickr.com/photos/belindavick/')
+        1
+
+        >>> get_page('https://www.flickr.com/photos/belindavick/page3')
+        3
+
+    """
+    assert len(url.path) >= 1
+    final_component = url.path[-1]
+
+    m = re.match(r"^page([0-9]+)$", final_component)
+
+    if m is not None:
+        return int(m.group(1))
+    else:
+        return 1
 
 
 def is_page(path_component: str) -> bool:
@@ -202,10 +231,11 @@ def parse_flickr_url(url: str) -> ParseResult:
     #
     #     https://www.flickr.com/photos/cat_tac/albums/72157666833379009
     #     https://www.flickr.com/photos/cat_tac/sets/72157666833379009
+    #     https://www.flickr.com/photos/andygocher/albums/72157648252420622/page3
     #
     if (
         is_long_url
-        and len(u.path) == 4
+        and 4 <= len(u.path) <= 5
         and u.path[0] == "photos"
         and u.path[2] in {"albums", "sets"}
         and is_digits(u.path[3])
@@ -214,6 +244,7 @@ def parse_flickr_url(url: str) -> ParseResult:
             "type": "album",
             "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
             "album_id": u.path[3],
+            "page": get_page(u),
         }
 
     # The URL for a user, e.g.
@@ -223,33 +254,21 @@ def parse_flickr_url(url: str) -> ParseResult:
     #     https://www.flickr.com/photos/blueminds/albums
     #     https://www.flickr.com/people/blueminds/page3
     #
-    if is_long_url and len(u.path) == 2 and u.path[0] in ("photos", "people"):
-        return {
-            "type": "user",
-            "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
-        }
+    if is_long_url and len(u.path) >= 2 and u.path[0] in {"photos", "people"}:
+        user_url = f"https://www.flickr.com/photos/{u.path[1]}"
 
-    if (
-        is_long_url
-        and len(u.path) == 3
-        and u.path[0] == "photos"
-        and u.path[2] == "albums"
-    ):
-        return {
-            "type": "user",
-            "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
-        }
+        if len(u.path) == 2:
+            return {"type": "user", "user_url": user_url, "page": 1}
 
-    if (
-        is_long_url
-        and len(u.path) == 3
-        and u.path[0] == "photos"
-        and is_page(u.path[2])
-    ):
-        return {
-            "type": "user",
-            "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
-        }
+        if len(u.path) == 3 and u.path[0] == "photos" and u.path[2] == "albums":
+            return {"type": "user", "user_url": user_url, "page": 1}
+
+        if len(u.path) == 3 and u.path[0] == "photos" and is_page(u.path[2]):
+            return {
+                "type": "user",
+                "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
+                "page": get_page(u),
+            }
 
     # URLs for a group, e.g.
     #
@@ -257,34 +276,20 @@ def parse_flickr_url(url: str) -> ParseResult:
     #     https://www.flickr.com/groups/slovenia
     #     https://www.flickr.com/groups/slovenia/pool/page16
     #
-    if is_long_url and len(u.path) == 2 and u.path[0] == "groups":
-        return {
-            "type": "group",
-            "group_url": f"https://www.flickr.com/groups/{u.path[1]}",
-        }
+    if is_long_url and len(u.path) >= 2 and u.path[0] == "groups":
+        if len(u.path) == 2:
+            return {
+                "type": "group",
+                "group_url": f"https://www.flickr.com/groups/{u.path[1]}",
+                "page": 1,
+            }
 
-    if (
-        is_long_url
-        and len(u.path) == 3
-        and u.path[0] == "groups"
-        and u.path[2] == "pool"
-    ):
-        return {
-            "type": "group",
-            "group_url": f"https://www.flickr.com/groups/{u.path[1]}",
-        }
-
-    if (
-        is_long_url
-        and len(u.path) == 4
-        and u.path[0] == "groups"
-        and u.path[2] == "pool"
-        and is_page(u.path[3])
-    ):
-        return {
-            "type": "group",
-            "group_url": f"https://www.flickr.com/groups/{u.path[1]}",
-        }
+        if u.path[2] == "pool":
+            return {
+                "type": "group",
+                "group_url": f"https://www.flickr.com/groups/{u.path[1]}",
+                "page": get_page(u),
+            }
 
     # URLs for a gallery, e.g.
     #
@@ -299,7 +304,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         and u.path[2] in {"gallery", "galleries"}
         and is_digits(u.path[3])
     ):
-        return {"type": "gallery", "gallery_id": u.path[3]}
+        return {"type": "gallery", "gallery_id": u.path[3], "page": get_page(u)}
 
     # URL for a tag, e.g.
     #
@@ -308,20 +313,11 @@ def parse_flickr_url(url: str) -> ParseResult:
     #
     if (
         is_long_url
-        and len(u.path) == 3
+        and len(u.path) >= 3
         and u.path[0] == "photos"
         and u.path[1] == "tags"
     ):
-        return {"type": "tag", "tag": u.path[2]}
-
-    if (
-        is_long_url
-        and len(u.path) == 4
-        and u.path[0] == "photos"
-        and u.path[1] == "tags"
-        and is_page(u.path[3])
-    ):
-        return {"type": "tag", "tag": u.path[2]}
+        return {"type": "tag", "tag": u.path[2], "page": get_page(u)}
 
     raise UnrecognisedUrl(f"Unrecognised URL: {url}")
 
