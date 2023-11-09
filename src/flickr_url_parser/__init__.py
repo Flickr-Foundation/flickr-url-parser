@@ -304,7 +304,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         and u.path[2] in {"gallery", "galleries"}
         and is_digits(u.path[3])
     ):
-        return {"type": "gallery", "gallery_id": u.path[3]}
+        return {"type": "gallery", "gallery_id": u.path[3], "page": get_page(u)}
 
     # URL for a tag, e.g.
     #
@@ -313,20 +313,11 @@ def parse_flickr_url(url: str) -> ParseResult:
     #
     if (
         is_long_url
-        and len(u.path) == 3
+        and len(u.path) >= 3
         and u.path[0] == "photos"
         and u.path[1] == "tags"
     ):
-        return {"type": "tag", "tag": u.path[2]}
-
-    if (
-        is_long_url
-        and len(u.path) == 4
-        and u.path[0] == "photos"
-        and u.path[1] == "tags"
-        and is_page(u.path[3])
-    ):
-        return {"type": "tag", "tag": u.path[2]}
+        return {"type": "tag", "tag": u.path[2], "page": get_page(u)}
 
     raise UnrecognisedUrl(f"Unrecognised URL: {url}")
 

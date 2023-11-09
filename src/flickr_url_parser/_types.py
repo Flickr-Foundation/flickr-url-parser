@@ -36,11 +36,13 @@ class Group(TypedDict):
 class Gallery(TypedDict):
     type: Literal["gallery"]
     gallery_id: str
+    page: int
 
 
 class Tag(TypedDict):
     type: Literal["tag"]
     tag: str
+    page: int
 
 
 ParseResult = Union[SinglePhoto, Album, User, Group, Gallery, Tag]

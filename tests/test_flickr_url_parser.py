@@ -7,7 +7,7 @@ from flickr_url_parser import (
     NotAFlickrUrl,
     UnrecognisedUrl,
 )
-from flickr_url_parser._types import Album, Group
+from flickr_url_parser._types import Album, Gallery, Group, Tag
 
 
 @pytest.mark.parametrize(
@@ -238,18 +238,24 @@ def test_it_parses_a_group(url: str, group: Group) -> None:
 
 
 @pytest.mark.parametrize(
-    "url",
+    ["url", "gallery"],
     [
-        "https://www.flickr.com/photos/flickr/gallery/72157722096057728/",
-        "https://www.flickr.com/photos/flickr/gallery/72157722096057728/page2",
-        "https://www.flickr.com/photos/flickr/galleries/72157722096057728/",
+        (
+            "https://www.flickr.com/photos/flickr/gallery/72157722096057728/",
+            {"type": "gallery", "gallery_id": "72157722096057728", "page": 1},
+        ),
+        (
+            "https://www.flickr.com/photos/flickr/gallery/72157722096057728/page2",
+            {"type": "gallery", "gallery_id": "72157722096057728", "page": 2},
+        ),
+        (
+            "https://www.flickr.com/photos/flickr/galleries/72157722096057728/",
+            {"type": "gallery", "gallery_id": "72157722096057728", "page": 1},
+        ),
     ],
 )
-def test_it_parses_a_gallery(url: str) -> None:
-    assert parse_flickr_url(url) == {
-        "type": "gallery",
-        "gallery_id": "72157722096057728",
-    }
+def test_it_parses_a_gallery(url: str, gallery: Gallery) -> None:
+    assert parse_flickr_url(url) == gallery
 
 
 @pytest.mark.parametrize(
@@ -263,6 +269,7 @@ def test_it_parses_a_short_gallery(vcr_cassette: str, url: str) -> None:
     assert parse_flickr_url(url) == {
         "type": "gallery",
         "gallery_id": "72157690638331410",
+        "page": 1,
     }
 
 
@@ -279,17 +286,24 @@ def test_it_doesnt_parse_bad_short_gallery_urls(vcr_cassette: str, url: str) -> 
 
 
 @pytest.mark.parametrize(
-    "url",
+    ["url", "tag"],
     [
-        "https://flickr.com/photos/tags/fluorspar/",
-        "https://flickr.com/photos/tags/fluorspar/page1",
+        (
+            "https://flickr.com/photos/tags/fluorspar/",
+            {"type": "tag", "tag": "fluorspar", "page": 1},
+        ),
+        (
+            "https://flickr.com/photos/tags/fluorspar/page1",
+            {"type": "tag", "tag": "fluorspar", "page": 1},
+        ),
+        (
+            "https://flickr.com/photos/tags/fluorspar/page5",
+            {"type": "tag", "tag": "fluorspar", "page": 5},
+        ),
     ],
 )
-def test_it_parses_a_tag(url: str) -> None:
-    assert parse_flickr_url(url) == {
-        "type": "tag",
-        "tag": "fluorspar",
-    }
+def test_it_parses_a_tag(url: str, tag: Tag) -> None:
+    assert parse_flickr_url(url) == tag
 
 
 def test_it_parses_a_short_flickr_url() -> None:
