@@ -69,9 +69,7 @@ exclude_also = [
 ]
 
 [tool.pytest.ini_options]
-filterwarnings = [
-  "error",
-]
+filterwarnings = ["error"]
 
 [tool.mypy]
 mypy_path = "src"
