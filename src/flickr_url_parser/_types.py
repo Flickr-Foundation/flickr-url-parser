@@ -1,12 +1,4 @@
-import sys
-from typing import Union
-
-# See https://mypy.readthedocs.io/en/stable/runtime_troubles.html#using-new-additions-to-the-typing-module
-# See https://github.com/python/mypy/issues/8520
-if sys.version_info >= (3, 8):
-    from typing import Literal, TypedDict
-else:
-    from typing_extensions import Literal, TypedDict
+from typing import Literal, TypedDict
 
 
 class SinglePhoto(TypedDict):
@@ -45,4 +37,4 @@ class Tag(TypedDict):
     page: int
 
 
-ParseResult = Union[SinglePhoto, Album, User, Group, Gallery, Tag]
+ParseResult = SinglePhoto | Album | User | Group | Gallery | Tag

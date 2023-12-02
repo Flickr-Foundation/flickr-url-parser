@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.4.0 - 2023-12-02
+
+*   Drop support for Python 3.7 to Python 3.11; this library now requires Python 3.12.
+
 ## v1.3.0 - 2023-11-09
 
 *   Add support for pagination.  All collection URLs (albums, users, groups, galleries and tags) now include a `page` parameter that tells you what page you've navigated to in the Flickr UI.
