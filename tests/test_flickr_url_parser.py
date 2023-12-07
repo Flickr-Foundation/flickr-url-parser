@@ -43,7 +43,7 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "https://www.flickr.com/groups/slovenia/discuss/",
     ],
 )
-def test_it_rejects_a_flickr_url_which_does_have_photos(url: str) -> None:
+def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url)
 
