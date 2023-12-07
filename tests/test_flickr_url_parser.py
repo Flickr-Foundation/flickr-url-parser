@@ -41,9 +41,11 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "https://www.flickr.com/photos/numerics/galleries/Ⅰ፩൲〡",
         # A discussion page for a group
         "https://www.flickr.com/groups/slovenia/discuss/",
+        # A malformed URL to a static photo
+        "https://live.staticflickr.com/7372/help.jpg",
     ],
 )
-def test_it_rejects_a_flickr_url_which_does_have_photos(url: str) -> None:
+def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url)
 
@@ -57,6 +59,7 @@ def test_it_rejects_a_flickr_url_which_does_have_photos(url: str) -> None:
         "http://flickr.com/photos/coast_guard/32812033543",
         "www.flickr.com/photos/coast_guard/32812033543",
         "flickr.com/photos/coast_guard/32812033543",
+        "live.staticflickr.com/2903/32812033543_c1b3784192_w_d.jpg",
     ],
 )
 def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
@@ -89,6 +92,10 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
         (
             "https://www.flickr.com/photos/chucksutherland/6738252077/player/162ed63802",
             "6738252077",
+        ),
+        (
+            "https://live.staticflickr.com/65535/53381630964_63d765ee92_s.jpg",
+            "53381630964",
         ),
     ],
 )

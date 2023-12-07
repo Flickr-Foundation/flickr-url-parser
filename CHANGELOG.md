@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.5.0 - 2023-12-07
+
+*   Add support for parsing static URLs, e.g. `https://live.staticflickr.com/65535/53381630964_63d765ee92_s.jpg`
+
 ## v1.4.0 - 2023-12-02
 
 *   Drop support for Python 3.7 to Python 3.11; this library now requires Python 3.12.
