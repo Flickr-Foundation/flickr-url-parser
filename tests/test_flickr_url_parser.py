@@ -50,6 +50,7 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "http://farm1.static.flickr.com/82/241abc183_dd0847d5c7_o.jpg",
         "https://farm5.staticflickr.com/4586/377abc695_bb4ecff5f4_o.jpg",
         "https://c8.staticflickr.com/6/5159/142abc431_7cf094b085_b.jpg",
+        "farm3.static.flickr.com",
     ],
 )
 def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:

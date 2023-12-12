@@ -317,11 +317,15 @@ def parse_flickr_url(url: str) -> ParseResult:
     # https://www.flickr.com/services/api/misc.urls.html
     if is_static_url:
         if (
-            u.host == "live.staticflickr.com"
-            or u.host == "static.flickr.com"
-            or re.match(r"^farm\d+\.staticflickr\.com$", u.host)
-            or re.match(r"^farm\d+\.static\.flickr\.com$", u.host)
-        ) and is_digits(u.path[0]):
+            (
+                u.host == "live.staticflickr.com"
+                or u.host == "static.flickr.com"
+                or re.match(r"^farm\d+\.staticflickr\.com$", u.host)
+                or re.match(r"^farm\d+\.static\.flickr\.com$", u.host)
+            )
+            and len(u.path) >= 1
+            and is_digits(u.path[0])
+        ):
             photo_id, *_ = u.path[1].split("_")
             if is_digits(photo_id):
                 return {"type": "single_photo", "photo_id": photo_id}
