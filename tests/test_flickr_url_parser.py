@@ -129,6 +129,10 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
         # From https://commons.wikimedia.org/wiki/File:IgnazioDanti.jpg
         # Retrieved 12 December 2023
         ("c8.staticflickr.com/6/5159/14288803431_7cf094b085_b.jpg", "14288803431"),
+        #
+        # From https://commons.wikimedia.org/wiki/File:75016-75017_Avenues_Foch_et_de_la_Grande_Armée_20050919.jpg
+        # Retrieved 12 December 2023
+        ("https://www.flickr.com/photos/joyoflife//44627174", "44627174"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:

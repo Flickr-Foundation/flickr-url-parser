@@ -130,6 +130,13 @@ def parse_flickr_url(url: str) -> ParseResult:
     except hyperlink.URLParseError:
         raise NotAFlickrUrl(url)
 
+    # Replace any empty components in the path.
+    #
+    # e.g. typos like https://www.flickr.com/photos/joyoflife//44627174
+    # In this case Flickr still resolves the single photo page, and we
+    # can tell what the person meant even if it's not explicit.
+    u = u.replace(path=tuple(component for component in u.path if component != ""))
+
     # Handle URLs without a scheme, e.g.
     #
     #     flickr.com/photos/1234
@@ -366,9 +373,6 @@ def parse_flickr_url(url: str) -> ParseResult:
         user_url = f"https://www.flickr.com/photos/{u.path[1]}"
 
         if len(u.path) == 2:
-            return {"type": "user", "user_url": user_url, "page": 1}
-
-        if len(u.path) == 3 and u.path[2] == "":
             return {"type": "user", "user_url": user_url, "page": 1}
 
         if len(u.path) == 3 and u.path[2] == "albums":
