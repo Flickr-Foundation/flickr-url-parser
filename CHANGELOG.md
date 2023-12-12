@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.5.2 - 2023-12-12
+
+*   Expand the support for parsing static URLs, e.g. `http://farm1.static.flickr.com/82/241abc183_dd0847d5c7_o.jpg`
+
 ## v1.5.1 - 2023-12-08
 
 *   Expand the support for parsing static URLs, e.g. `https://photos12.flickr.com/16159487_3a6615a565_b.jpg`

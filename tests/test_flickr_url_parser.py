@@ -44,6 +44,7 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         # A malformed URL to a static photo
         "https://live.staticflickr.com/7372/help.jpg",
         "photos12.flickr.com/robots.txt",
+        "http://farm1.static.flickr.com/82/241abc183_dd0847d5c7_o.jpg",
     ],
 )
 def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
@@ -99,6 +100,8 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
             "53381630964",
         ),
         ("photos12.flickr.com/16159487_3a6615a565_b.jpg", "16159487"),
+        ("http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
+        ("farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
