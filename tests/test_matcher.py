@@ -23,6 +23,10 @@ from flickr_url_parser import find_flickr_urls_in_text
         # From https://commons.wikimedia.org/wiki/File:Maradona_Soccer_Aid.jpg
         # Retrieved 12 December 2023
         "http://static.flickr.com/63/155697786_0125559b4e.jpg",
+        #
+        # From https://commons.wikimedia.org/wiki/File:IgnazioDanti.jpg
+        # Retrieved 12 December 2023
+        "https://c8.staticflickr.com/6/5159/14288803431_7cf094b085_b.jpg",
     ],
 )
 def test_find_flickr_urls_in_text(url: str) -> None:
