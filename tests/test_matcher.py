@@ -15,6 +15,10 @@ from flickr_url_parser import find_flickr_urls_in_text
         "https://www.flickr.com/photo_zoom.gne?id=196155401&size=m",
         "http://photos4.flickr.com/4891733_cec6cd1c66_b_d.jpg",
         "https://farm5.static.flickr.com/4586/37767087695_bb4ecff5f4_o.jpg",
+        #
+        # From https://commons.wikimedia.org/wiki/File:Adriaen_Brouwer_-_The_slaughter_feast.jpg
+        # Retrieved 12 December 2023
+        "https://farm5.staticflickr.com/4586/37767087695_bb4ecff5f4_o.jpg",
     ],
 )
 def test_find_flickr_urls_in_text(url: str) -> None:
