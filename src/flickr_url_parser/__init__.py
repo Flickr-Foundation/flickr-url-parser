@@ -5,6 +5,7 @@ import hyperlink
 
 from flickr_url_parser.base58 import is_base58, base58_decode
 from flickr_url_parser._types import ParseResult
+from .matcher import find_flickr_urls_in_text
 
 __version__ = "1.5.3"
 
@@ -441,4 +442,10 @@ def parse_flickr_url(url: str) -> ParseResult:
     raise UnrecognisedUrl(f"Unrecognised URL: {url}")
 
 
-__all__ = ["parse_flickr_url", "UnrecognisedUrl", "NotAFlickrUrl", "ParseResult"]
+__all__ = [
+    "find_flickr_urls_in_text",
+    "parse_flickr_url",
+    "UnrecognisedUrl",
+    "NotAFlickrUrl",
+    "ParseResult",
+]
