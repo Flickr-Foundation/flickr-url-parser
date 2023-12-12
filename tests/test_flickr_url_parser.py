@@ -31,6 +31,7 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "https://www.flickr.com",
         "https://www.flickr.com/account/email",
         "https://www.flickr.com/photo_zoom.gne",
+        "https://www.flickr.com/photo_zoom.gne?id=unknown",
         # The characters in these examples are drawn from the
         # Unicode Numeric Property Definitions:
         # https://www.unicode.org/L2/L2012/12310-numeric-type-def.html
@@ -105,6 +106,7 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
         ("http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
         ("farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
         ("http://flickr.com/photo/17277074@N00/2619974961", "2619974961"),
+        ("https://www.flickr.com/photo_zoom.gne?id=196155401&size=m", "196155401"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:

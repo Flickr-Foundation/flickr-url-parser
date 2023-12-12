@@ -268,6 +268,18 @@ def parse_flickr_url(url: str) -> ParseResult:
     if is_short_url and len(u.path) == 2 and u.path[0] == "p" and is_base58(u.path[1]):
         return {"type": "single_photo", "photo_id": base58_decode(u.path[1])}
 
+    # Another variant of URL for a single photo, e.g.
+    #
+    #     https://www.flickr.com/photo_zoom.gne?id=196155401&size=m
+    #
+    # Today this redirects to the /sizes/ page, but it's quite commonly
+    # used in e.g. Wikimedia Commons snapshots.
+    if is_long_url and u.path == ("photo_zoom.gne",) and len(u.get("id")) == 1:
+        photo_id = u.get("id")[0]
+
+        if isinstance(photo_id, str) and is_digits(photo_id):
+            return {"type": "single_photo", "photo_id": photo_id}
+
     # The URL for an actual file, e.g.
     #
     #     https://live.staticflickr.com/65535/53381630964_63d765ee92_s.jpg
