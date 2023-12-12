@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## v1.6.0 - 2023-12-12
+
+*   Add a new function `find_flickr_urls_in_text` which can be used to find Flickr URLs in a block of arbitrary text.
+    Example:
+    
+    ```pycon
+    >>> text = """
+    ... This is the help page: https://www.flickr.com/help
+    ...
+    ... This is a user: https://www.flickr.com/photos/mariakallin/
+    ... """
+    >>> find_flickr_urls_in_text(text)
+    ['https://www.flickr.com/help', 'https://www.flickr.com/photos/mariakallin/']
+    ```
+    
+    This is useful for text analysis.
+
 ## v1.5.3 - 2023-12-12
 
 Add support for parsing more varieties of URL, based on those seen in the Wikimedia Commons snapshots, including:
