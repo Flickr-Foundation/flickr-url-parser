@@ -102,6 +102,7 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
         ("photos12.flickr.com/16159487_3a6615a565_b.jpg", "16159487"),
         ("http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
         ("farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
+        ("http://flickr.com/photo/17277074@N00/2619974961", "2619974961"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:

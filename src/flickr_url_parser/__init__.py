@@ -234,6 +234,27 @@ def parse_flickr_url(url: str) -> ParseResult:
             "photo_id": u.path[2],
         }
 
+    # Old-style URLs for a single photo, e.g.
+    # http://flickr.com/photo/17277074@N00/2619974961
+    #
+    # This is a variant of Flickr photo URL that appears fairly
+    # regularly in e.g. Wikimedia Commons – it no longer resolves, but
+    # there are enough of these both on WMC and around the general web
+    # that I think this was once a supported URL format.
+    #
+    # It's clear enough what this means that we should be able to
+    # parse it, even if new URLs like this are no longer created.
+    if (
+        is_long_url
+        and len(u.path) >= 3
+        and u.path[0] == "photo"
+        and is_digits(u.path[2])
+    ):
+        return {
+            "type": "single_photo",
+            "photo_id": u.path[2],
+        }
+
     # The URL for a single photo, e.g.
     #
     #     https://flic.kr/p/2p4QbKN
