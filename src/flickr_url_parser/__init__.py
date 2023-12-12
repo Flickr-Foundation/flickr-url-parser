@@ -271,10 +271,15 @@ def parse_flickr_url(url: str) -> ParseResult:
     # Another variant of URL for a single photo, e.g.
     #
     #     https://www.flickr.com/photo_zoom.gne?id=196155401&size=m
+    #     https://www.flickr.com/photo_exif.gne?id=1427904898
     #
-    # Today this redirects to the /sizes/ page, but it's quite commonly
-    # used in e.g. Wikimedia Commons snapshots.
-    if is_long_url and u.path == ("photo_zoom.gne",) and len(u.get("id")) == 1:
+    # Today this redirects to the /sizes/ or the /meta/ page, but it's quite
+    # commonly used in e.g. Wikimedia Commons.
+    if (
+        is_long_url
+        and (u.path == ("photo_zoom.gne",) or u.path == ("photo_exif.gne",))
+        and len(u.get("id")) == 1
+    ):
         photo_id = u.get("id")[0]
 
         if isinstance(photo_id, str) and is_digits(photo_id):
