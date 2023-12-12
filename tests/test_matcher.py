@@ -12,6 +12,7 @@ from flickr_url_parser import find_flickr_urls_in_text
         "https://live.staticflickr.com/7372/help.jpg",
         "http://flickr.com/photos/coast_guard/32812033543",
         "http://farm3.static.flickr.com/2060/2264610973_3989a4627f_o.jpg",
+        "https://www.flickr.com/photo_zoom.gne?id=196155401&size=m",
     ],
 )
 def test_find_flickr_urls_in_text(url: str) -> None:
