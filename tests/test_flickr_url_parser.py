@@ -27,8 +27,10 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
 @pytest.mark.parametrize(
     "url",
     [
+        "flickr.com",
         "https://www.flickr.com",
         "https://www.flickr.com/account/email",
+        "https://www.flickr.com/photo_zoom.gne",
         # The characters in these examples are drawn from the
         # Unicode Numeric Property Definitions:
         # https://www.unicode.org/L2/L2012/12310-numeric-type-def.html

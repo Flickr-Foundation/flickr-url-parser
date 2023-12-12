@@ -152,11 +152,15 @@ def parse_flickr_url(url: str) -> ParseResult:
         }:
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
-        if re.match(r"^photos[0-9]+\.flickr\.com$", u.path[0].lower()) is not None:
+        if (
+            u.path
+            and re.match(r"^photos[0-9]+\.flickr\.com$", u.path[0].lower()) is not None
+        ):
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
         if (
-            re.match(r"^farm[0-9]+\.static\.flickr\.com$", u.path[0].lower())
+            u.path
+            and re.match(r"^farm[0-9]+\.static\.flickr\.com$", u.path[0].lower())
             is not None
         ):
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
