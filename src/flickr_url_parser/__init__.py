@@ -342,6 +342,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     #     https://www.flickr.com/people/blueminds/
     #     https://www.flickr.com/photos/blueminds/albums
     #     https://www.flickr.com/people/blueminds/page3
+    #     https://www.flickr.com/photos/blueminds/?saved=1
     #
     if is_long_url and len(u.path) >= 2 and u.path[0] in {"photos", "people"}:
         user_url = f"https://www.flickr.com/photos/{u.path[1]}"
@@ -349,10 +350,13 @@ def parse_flickr_url(url: str) -> ParseResult:
         if len(u.path) == 2:
             return {"type": "user", "user_url": user_url, "page": 1}
 
-        if len(u.path) == 3 and u.path[0] == "photos" and u.path[2] == "albums":
+        if len(u.path) == 3 and u.path[2] == "":
             return {"type": "user", "user_url": user_url, "page": 1}
 
-        if len(u.path) == 3 and u.path[0] == "photos" and is_page(u.path[2]):
+        if len(u.path) == 3 and u.path[2] == "albums":
+            return {"type": "user", "user_url": user_url, "page": 1}
+
+        if len(u.path) == 3 and is_page(u.path[2]):
             return {
                 "type": "user",
                 "user_url": f"https://www.flickr.com/photos/{u.path[1]}",

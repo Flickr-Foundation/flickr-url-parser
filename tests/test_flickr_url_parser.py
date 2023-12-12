@@ -203,6 +203,7 @@ def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: str, url: str) -> No
         "https://www.flickr.com/photos/blueminds/",
         "https://www.flickr.com/people/blueminds/",
         "https://www.flickr.com/photos/blueminds/albums",
+        "https://www.flickr.com/photos/blueminds/?saved=1",
     ],
 )
 def test_it_parses_a_user(url: str) -> None:
