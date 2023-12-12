@@ -155,6 +155,12 @@ def parse_flickr_url(url: str) -> ParseResult:
         if re.match(r"^photos[0-9]+\.flickr\.com$", u.path[0].lower()) is not None:
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
+        if (
+            re.match(r"^farm[0-9]+\.static\.flickr\.com$", u.path[0].lower())
+            is not None
+        ):
+            u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
+
     # If this URL doesn't come from Flickr.com, then we can't possibly classify
     # it as a Flickr URL!
     is_long_url = u.host.lower() in {"www.flickr.com", "flickr.com"}
@@ -162,6 +168,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     is_static_url = (
         u.host == "live.staticflickr.com"
         or re.match(r"^photos[0-9]+\.flickr\.com$", u.host) is not None
+        or re.match(r"^farm[0-9]+\.static\.flickr\.com$", u.host) is not None
     )
 
     if not is_long_url and not is_short_url and not is_static_url:
@@ -240,6 +247,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     #
     #     https://live.staticflickr.com/65535/53381630964_63d765ee92_s.jpg
     #     https://photos12.flickr.com/16159487_3a6615a565_b.jpg
+    #     http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg
     #
     # The exact format of these URLs is described in the Flickr docs:
     # https://www.flickr.com/services/api/misc.urls.html
@@ -251,6 +259,11 @@ def parse_flickr_url(url: str) -> ParseResult:
 
         if re.match(r"^photos\d+\.flickr\.com$", u.host) and len(u.path) >= 1:
             photo_id, *_ = u.path[0].split("_")
+            if is_digits(photo_id):
+                return {"type": "single_photo", "photo_id": photo_id}
+
+        if re.match(r"^farm\d+\.static\.flickr\.com$", u.host) and is_digits(u.path[0]):
+            photo_id, *_ = u.path[1].split("_")
             if is_digits(photo_id):
                 return {"type": "single_photo", "photo_id": photo_id}
 
