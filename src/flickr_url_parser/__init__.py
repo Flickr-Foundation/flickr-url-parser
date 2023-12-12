@@ -149,6 +149,7 @@ def parse_flickr_url(url: str) -> ParseResult:
             "flickr.com",
             "flic.kr",
             "live.staticflickr.com",
+            "static.flickr.com",
         }:
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
@@ -171,6 +172,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     is_short_url = u.host == "flic.kr"
     is_static_url = (
         u.host == "live.staticflickr.com"
+        or u.host == "static.flickr.com"
         or re.match(r"^photos[0-9]+\.flickr\.com$", u.host) is not None
         or re.match(r"^farm[0-9]+\.static\.flickr\.com$", u.host) is not None
         or re.match(r"^farm[0-9]+\.staticflickr\.com$", u.host) is not None
@@ -289,6 +291,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     # The URL for an actual file, e.g.
     #
     #     https://live.staticflickr.com/65535/53381630964_63d765ee92_s.jpg
+    #     http://static.flickr.com/63/155697786_0125559b4e.jpg
     #     https://photos12.flickr.com/16159487_3a6615a565_b.jpg
     #     http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg
     #     https://farm5.staticflickr.com/4586/37767087695_bb4ecff5f4_o.jpg
@@ -296,23 +299,18 @@ def parse_flickr_url(url: str) -> ParseResult:
     # The exact format of these URLs is described in the Flickr docs:
     # https://www.flickr.com/services/api/misc.urls.html
     if is_static_url:
-        if u.host == "live.staticflickr.com" and is_digits(u.path[0]):
+        if (
+            u.host == "live.staticflickr.com"
+            or u.host == "static.flickr.com"
+            or re.match(r"^farm\d+\.staticflickr\.com$", u.host)
+            or re.match(r"^farm\d+\.static\.flickr\.com$", u.host)
+        ) and is_digits(u.path[0]):
             photo_id, *_ = u.path[1].split("_")
             if is_digits(photo_id):
                 return {"type": "single_photo", "photo_id": photo_id}
 
         if re.match(r"^photos\d+\.flickr\.com$", u.host) and len(u.path) >= 1:
             photo_id, *_ = u.path[0].split("_")
-            if is_digits(photo_id):
-                return {"type": "single_photo", "photo_id": photo_id}
-
-        if re.match(r"^farm\d+\.static\.flickr\.com$", u.host) and is_digits(u.path[0]):
-            photo_id, *_ = u.path[1].split("_")
-            if is_digits(photo_id):
-                return {"type": "single_photo", "photo_id": photo_id}
-
-        if re.match(r"^farm\d+\.staticflickr\.com$", u.host) and len(u.path) >= 2:
-            photo_id, *_ = u.path[1].split("_")
             if is_digits(photo_id):
                 return {"type": "single_photo", "photo_id": photo_id}
 

@@ -115,6 +115,11 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
             "https://farm5.staticflickr.com/4586/37767087695_bb4ecff5f4_o.jpg",
             "37767087695",
         ),
+        #
+        # From https://commons.wikimedia.org/wiki/File:Maradona_Soccer_Aid.jpg
+        # Retrieved 12 December 2023
+        ("static.flickr.com/63/155697786_0125559b4e.jpg", "155697786"),
+        ("http://static.flickr.com/63/155697786_0125559b4e.jpg", "155697786"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
