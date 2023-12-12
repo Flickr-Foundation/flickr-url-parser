@@ -120,6 +120,10 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
         # Retrieved 12 December 2023
         ("static.flickr.com/63/155697786_0125559b4e.jpg", "155697786"),
         ("http://static.flickr.com/63/155697786_0125559b4e.jpg", "155697786"),
+        #
+        # From https://commons.wikimedia.org/wiki/File:Ice_Cream_Stand_on_Denman_Island.jpg
+        # Retrieved 12 December 2023
+        ("www.flickr.com/photo.gne?id=105", "105"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:

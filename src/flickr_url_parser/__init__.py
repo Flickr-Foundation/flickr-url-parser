@@ -275,12 +275,14 @@ def parse_flickr_url(url: str) -> ParseResult:
     #
     #     https://www.flickr.com/photo_zoom.gne?id=196155401&size=m
     #     https://www.flickr.com/photo_exif.gne?id=1427904898
+    #     www.flickr.com/photo.gne?id=105
     #
     # Today this redirects to the /sizes/ or the /meta/ page, but it's quite
     # commonly used in e.g. Wikimedia Commons.
     if (
         is_long_url
-        and (u.path == ("photo_zoom.gne",) or u.path == ("photo_exif.gne",))
+        and len(u.path) == 1
+        and u.path[0] in {"photo_zoom.gne", "photo_exif.gne", "photo.gne"}
         and len(u.get("id")) == 1
     ):
         photo_id = u.get("id")[0]
