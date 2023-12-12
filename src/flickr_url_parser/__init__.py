@@ -6,7 +6,7 @@ import hyperlink
 from flickr_url_parser.base58 import is_base58, base58_decode
 from flickr_url_parser._types import ParseResult
 
-__version__ = "1.5.0"
+__version__ = "1.5.1"
 
 
 class NotAFlickrUrl(Exception):
@@ -143,19 +143,26 @@ def parse_flickr_url(url: str) -> ParseResult:
     #
     # which allows the rest of the logic in the function to do
     # the "right thing" with this URL.
-    if not url.startswith("http") and u.path[0].lower() in {
-        "www.flickr.com",
-        "flickr.com",
-        "flic.kr",
-        "live.staticflickr.com",
-    }:
-        u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
+    if not url.startswith("http"):
+        if u.path[0].lower() in {
+            "www.flickr.com",
+            "flickr.com",
+            "flic.kr",
+            "live.staticflickr.com",
+        }:
+            u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
+
+        if re.match(r"^photos[0-9]+\.flickr\.com$", u.path[0].lower()) is not None:
+            u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
     # If this URL doesn't come from Flickr.com, then we can't possibly classify
     # it as a Flickr URL!
     is_long_url = u.host.lower() in {"www.flickr.com", "flickr.com"}
     is_short_url = u.host == "flic.kr"
-    is_static_url = u.host == "live.staticflickr.com"
+    is_static_url = (
+        u.host == "live.staticflickr.com"
+        or re.match(r"^photos[0-9]+\.flickr\.com$", u.host) is not None
+    )
 
     if not is_long_url and not is_short_url and not is_static_url:
         raise NotAFlickrUrl(url)
@@ -232,13 +239,20 @@ def parse_flickr_url(url: str) -> ParseResult:
     # The URL for an actual file, e.g.
     #
     #     https://live.staticflickr.com/65535/53381630964_63d765ee92_s.jpg
+    #     https://photos12.flickr.com/16159487_3a6615a565_b.jpg
     #
     # The exact format of these URLs is described in the Flickr docs:
     # https://www.flickr.com/services/api/misc.urls.html
-    if is_static_url and is_digits(u.path[0]):
-        photo_id, *_ = u.path[1].split("_")
-        if is_digits(photo_id):
-            return {"type": "single_photo", "photo_id": photo_id}
+    if is_static_url:
+        if u.host == "live.staticflickr.com" and is_digits(u.path[0]):
+            photo_id, *_ = u.path[1].split("_")
+            if is_digits(photo_id):
+                return {"type": "single_photo", "photo_id": photo_id}
+
+        if re.match(r"^photos\d+\.flickr\.com$", u.host) and len(u.path) >= 1:
+            photo_id, *_ = u.path[0].split("_")
+            if is_digits(photo_id):
+                return {"type": "single_photo", "photo_id": photo_id}
 
     # The URL for an album, e.g.
     #
