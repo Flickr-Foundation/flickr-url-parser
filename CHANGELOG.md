@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v1.5.3 - 2023-12-12
+
+Add support for parsing more varieties of URL, based on those seen in the Wikimedia Commons snapshots, including:
+
+*   Old-style photo URLs that use `/photo/` instead of `/photos/`, e.g. `http://flickr.com/photo/17277074@N00/2619974961`
+*   Photo URLs that use the `/photo_zoom.gne` path and similar `.gne` paths, e.g. `https://www.flickr.com/photo_zoom.gne?id=196155401&size=m`
+*   A wide variety of `static.flickr.com`-like URLs; URLs that point to raw JPEGs rather than the photo description page
+
 ## v1.5.2 - 2023-12-12
 
 *   Expand the support for parsing static URLs, e.g. `http://farm1.static.flickr.com/82/241abc183_dd0847d5c7_o.jpg`

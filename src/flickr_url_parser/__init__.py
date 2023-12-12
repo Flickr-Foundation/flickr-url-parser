@@ -6,7 +6,7 @@ import hyperlink
 from flickr_url_parser.base58 import is_base58, base58_decode
 from flickr_url_parser._types import ParseResult
 
-__version__ = "1.5.2"
+__version__ = "1.5.3"
 
 
 class NotAFlickrUrl(Exception):
@@ -130,6 +130,13 @@ def parse_flickr_url(url: str) -> ParseResult:
     except hyperlink.URLParseError:
         raise NotAFlickrUrl(url)
 
+    # Replace any empty components in the path.
+    #
+    # e.g. typos like https://www.flickr.com/photos/joyoflife//44627174
+    # In this case Flickr still resolves the single photo page, and we
+    # can tell what the person meant even if it's not explicit.
+    u = u.replace(path=tuple(component for component in u.path if component != ""))
+
     # Handle URLs without a scheme, e.g.
     #
     #     flickr.com/photos/1234
@@ -149,15 +156,26 @@ def parse_flickr_url(url: str) -> ParseResult:
             "flickr.com",
             "flic.kr",
             "live.staticflickr.com",
+            "static.flickr.com",
         }:
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
-        if re.match(r"^photos[0-9]+\.flickr\.com$", u.path[0].lower()) is not None:
+        if (
+            u.path
+            and re.match(r"^photos[0-9]+\.flickr\.com$", u.path[0].lower()) is not None
+        ):
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
         if (
-            re.match(r"^farm[0-9]+\.static\.flickr\.com$", u.path[0].lower())
+            u.path
+            and re.match(r"^farm[0-9]+\.static\.?flickr\.com$", u.path[0].lower())
             is not None
+        ):
+            u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
+
+        if (
+            u.path
+            and re.match(r"^c[0-9]+\.staticflickr\.com$", u.path[0].lower()) is not None
         ):
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
@@ -167,8 +185,11 @@ def parse_flickr_url(url: str) -> ParseResult:
     is_short_url = u.host == "flic.kr"
     is_static_url = (
         u.host == "live.staticflickr.com"
+        or u.host == "static.flickr.com"
         or re.match(r"^photos[0-9]+\.flickr\.com$", u.host) is not None
         or re.match(r"^farm[0-9]+\.static\.flickr\.com$", u.host) is not None
+        or re.match(r"^farm[0-9]+\.staticflickr\.com$", u.host) is not None
+        or re.match(r"^c[0-9]+\.staticflickr\.com$", u.host) is not None
     )
 
     if not is_long_url and not is_short_url and not is_static_url:
@@ -234,6 +255,27 @@ def parse_flickr_url(url: str) -> ParseResult:
             "photo_id": u.path[2],
         }
 
+    # Old-style URLs for a single photo, e.g.
+    # http://flickr.com/photo/17277074@N00/2619974961
+    #
+    # This is a variant of Flickr photo URL that appears fairly
+    # regularly in e.g. Wikimedia Commons – it no longer resolves, but
+    # there are enough of these both on WMC and around the general web
+    # that I think this was once a supported URL format.
+    #
+    # It's clear enough what this means that we should be able to
+    # parse it, even if new URLs like this are no longer created.
+    if (
+        is_long_url
+        and len(u.path) >= 3
+        and u.path[0] == "photo"
+        and is_digits(u.path[2])
+    ):
+        return {
+            "type": "single_photo",
+            "photo_id": u.path[2],
+        }
+
     # The URL for a single photo, e.g.
     #
     #     https://flic.kr/p/2p4QbKN
@@ -243,16 +285,47 @@ def parse_flickr_url(url: str) -> ParseResult:
     if is_short_url and len(u.path) == 2 and u.path[0] == "p" and is_base58(u.path[1]):
         return {"type": "single_photo", "photo_id": base58_decode(u.path[1])}
 
+    # Another variant of URL for a single photo, e.g.
+    #
+    #     https://www.flickr.com/photo_zoom.gne?id=196155401&size=m
+    #     https://www.flickr.com/photo_exif.gne?id=1427904898
+    #     www.flickr.com/photo.gne?id=105
+    #
+    # Today this redirects to the /sizes/ or the /meta/ page, but it's quite
+    # commonly used in e.g. Wikimedia Commons.
+    if (
+        is_long_url
+        and len(u.path) == 1
+        and u.path[0] in {"photo_zoom.gne", "photo_exif.gne", "photo.gne"}
+        and len(u.get("id")) == 1
+    ):
+        photo_id = u.get("id")[0]
+
+        if isinstance(photo_id, str) and is_digits(photo_id):
+            return {"type": "single_photo", "photo_id": photo_id}
+
     # The URL for an actual file, e.g.
     #
     #     https://live.staticflickr.com/65535/53381630964_63d765ee92_s.jpg
+    #     http://static.flickr.com/63/155697786_0125559b4e.jpg
     #     https://photos12.flickr.com/16159487_3a6615a565_b.jpg
     #     http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg
+    #     https://farm5.staticflickr.com/4586/37767087695_bb4ecff5f4_o.jpg
+    #     https://c8.staticflickr.com/6/5159/14288803431_7cf094b085_b.jpg
     #
     # The exact format of these URLs is described in the Flickr docs:
     # https://www.flickr.com/services/api/misc.urls.html
     if is_static_url:
-        if u.host == "live.staticflickr.com" and is_digits(u.path[0]):
+        if (
+            (
+                u.host == "live.staticflickr.com"
+                or u.host == "static.flickr.com"
+                or re.match(r"^farm\d+\.staticflickr\.com$", u.host)
+                or re.match(r"^farm\d+\.static\.flickr\.com$", u.host)
+            )
+            and len(u.path) >= 1
+            and is_digits(u.path[0])
+        ):
             photo_id, *_ = u.path[1].split("_")
             if is_digits(photo_id):
                 return {"type": "single_photo", "photo_id": photo_id}
@@ -262,8 +335,13 @@ def parse_flickr_url(url: str) -> ParseResult:
             if is_digits(photo_id):
                 return {"type": "single_photo", "photo_id": photo_id}
 
-        if re.match(r"^farm\d+\.static\.flickr\.com$", u.host) and is_digits(u.path[0]):
-            photo_id, *_ = u.path[1].split("_")
+        if (
+            re.match(r"^c\d+\.staticflickr\.com$", u.host)
+            and len(u.path) == 3
+            and is_digits(u.path[0])
+            and is_digits(u.path[1])
+        ):
+            photo_id, *_ = u.path[2].split("_")
             if is_digits(photo_id):
                 return {"type": "single_photo", "photo_id": photo_id}
 
@@ -293,6 +371,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     #     https://www.flickr.com/people/blueminds/
     #     https://www.flickr.com/photos/blueminds/albums
     #     https://www.flickr.com/people/blueminds/page3
+    #     https://www.flickr.com/photos/blueminds/?saved=1
     #
     if is_long_url and len(u.path) >= 2 and u.path[0] in {"photos", "people"}:
         user_url = f"https://www.flickr.com/photos/{u.path[1]}"
@@ -300,10 +379,10 @@ def parse_flickr_url(url: str) -> ParseResult:
         if len(u.path) == 2:
             return {"type": "user", "user_url": user_url, "page": 1}
 
-        if len(u.path) == 3 and u.path[0] == "photos" and u.path[2] == "albums":
+        if len(u.path) == 3 and u.path[2] == "albums":
             return {"type": "user", "user_url": user_url, "page": 1}
 
-        if len(u.path) == 3 and u.path[0] == "photos" and is_page(u.path[2]):
+        if len(u.path) == 3 and is_page(u.path[2]):
             return {
                 "type": "user",
                 "user_url": f"https://www.flickr.com/photos/{u.path[1]}",

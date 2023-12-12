@@ -27,8 +27,11 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
 @pytest.mark.parametrize(
     "url",
     [
+        "flickr.com",
         "https://www.flickr.com",
         "https://www.flickr.com/account/email",
+        "https://www.flickr.com/photo_zoom.gne",
+        "https://www.flickr.com/photo_zoom.gne?id=unknown",
         # The characters in these examples are drawn from the
         # Unicode Numeric Property Definitions:
         # https://www.unicode.org/L2/L2012/12310-numeric-type-def.html
@@ -45,6 +48,9 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "https://live.staticflickr.com/7372/help.jpg",
         "photos12.flickr.com/robots.txt",
         "http://farm1.static.flickr.com/82/241abc183_dd0847d5c7_o.jpg",
+        "https://farm5.staticflickr.com/4586/377abc695_bb4ecff5f4_o.jpg",
+        "https://c8.staticflickr.com/6/5159/142abc431_7cf094b085_b.jpg",
+        "farm3.static.flickr.com",
     ],
 )
 def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
@@ -102,6 +108,32 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
         ("photos12.flickr.com/16159487_3a6615a565_b.jpg", "16159487"),
         ("http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
         ("farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
+        ("http://flickr.com/photo/17277074@N00/2619974961", "2619974961"),
+        ("https://www.flickr.com/photo_zoom.gne?id=196155401&size=m", "196155401"),
+        ("https://www.flickr.com/photos/gracewong/196155401/meta/", "196155401"),
+        ("https://www.flickr.com/photo_exif.gne?id=1427904898", "1427904898"),
+        # This URL is linked from https://commons.wikimedia.org/wiki/File:Adriaen_Brouwer_-_The_slaughter_feast.jpg
+        (
+            "https://farm5.staticflickr.com/4586/37767087695_bb4ecff5f4_o.jpg",
+            "37767087695",
+        ),
+        #
+        # From https://commons.wikimedia.org/wiki/File:Maradona_Soccer_Aid.jpg
+        # Retrieved 12 December 2023
+        ("static.flickr.com/63/155697786_0125559b4e.jpg", "155697786"),
+        ("http://static.flickr.com/63/155697786_0125559b4e.jpg", "155697786"),
+        #
+        # From https://commons.wikimedia.org/wiki/File:Ice_Cream_Stand_on_Denman_Island.jpg
+        # Retrieved 12 December 2023
+        ("www.flickr.com/photo.gne?id=105", "105"),
+        #
+        # From https://commons.wikimedia.org/wiki/File:IgnazioDanti.jpg
+        # Retrieved 12 December 2023
+        ("c8.staticflickr.com/6/5159/14288803431_7cf094b085_b.jpg", "14288803431"),
+        #
+        # From https://commons.wikimedia.org/wiki/File:75016-75017_Avenues_Foch_et_de_la_Grande_Armée_20050919.jpg
+        # Retrieved 12 December 2023
+        ("https://www.flickr.com/photos/joyoflife//44627174", "44627174"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
@@ -181,6 +213,7 @@ def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: str, url: str) -> No
         "https://www.flickr.com/photos/blueminds/",
         "https://www.flickr.com/people/blueminds/",
         "https://www.flickr.com/photos/blueminds/albums",
+        "https://www.flickr.com/photos/blueminds/?saved=1",
     ],
 )
 def test_it_parses_a_user(url: str) -> None:
