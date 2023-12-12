@@ -5,6 +5,7 @@ FLICKR_URL_RE_MATCH = re.compile(
     r"(?:https?://)"
     r"?(?:www\.)?"
     r"(?:live\.static\.?)?"
+    r"(?:farm[0-9]+\.static\.)?"
     r"flickr\.com[0-9A-Za-z@_\-/\.]*"
 )
 
