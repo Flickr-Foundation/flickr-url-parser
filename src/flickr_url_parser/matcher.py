@@ -16,4 +16,4 @@ def find_flickr_urls_in_text(text: str) -> list[str]:
     """
     Returns a list of Flickr URLs in a block of text (if any).
     """
-    return FLICKR_URL_RE_MATCH.findall(text)
+    return [url.rstrip(".") for url in FLICKR_URL_RE_MATCH.findall(text)]
