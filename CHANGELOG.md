@@ -2,7 +2,7 @@
 
 ## v1.5.3 - 2023-12-12
 
-Add support for parsing several more varieties of URL, based on those seen in the Wikimedia Commons snapshots:
+Add support for parsing more varieties of URL, based on those seen in the Wikimedia Commons snapshots, including:
 
 *   Old-style photo URLs that use `/photo/` instead of `/photos/`, e.g. `http://flickr.com/photo/17277074@N00/2619974961`
 *   Photo URLs that use the `/photo_zoom.gne` path and similar `.gne` paths, e.g. `https://www.flickr.com/photo_zoom.gne?id=196155401&size=m`
