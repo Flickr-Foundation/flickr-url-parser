@@ -5,8 +5,8 @@
 Add support for parsing several more varieties of URL, based on those seen in the Wikimedia Commons snapshots:
 
 *   Old-style photo URLs that use `/photo/` instead of `/photos/`, e.g. `http://flickr.com/photo/17277074@N00/2619974961`
-*   Photo URLs that use the `/photo_zoom.gne` path, e.g. `https://www.flickr.com/photo_zoom.gne?id=196155401&size=m`
-*   Photo URLs that use the `/photo_exif.gne` path, e.g. `https://www.flickr.com/photo_exif.gne?id=1427904898`
+*   Photo URLs that use the `/photo_zoom.gne` path and similar `.gne` paths, e.g. `https://www.flickr.com/photo_zoom.gne?id=196155401&size=m`
+*   A wide variety of `static.flickr.com`-like URLs; URLs that point to raw JPEGs rather than the photo description page
 
 ## v1.5.2 - 2023-12-12
 
