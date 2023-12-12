@@ -49,6 +49,7 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "photos12.flickr.com/robots.txt",
         "http://farm1.static.flickr.com/82/241abc183_dd0847d5c7_o.jpg",
         "https://farm5.staticflickr.com/4586/377abc695_bb4ecff5f4_o.jpg",
+        "https://c8.staticflickr.com/6/5159/142abc431_7cf094b085_b.jpg",
     ],
 )
 def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
@@ -124,6 +125,10 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
         # From https://commons.wikimedia.org/wiki/File:Ice_Cream_Stand_on_Denman_Island.jpg
         # Retrieved 12 December 2023
         ("www.flickr.com/photo.gne?id=105", "105"),
+        #
+        # From https://commons.wikimedia.org/wiki/File:IgnazioDanti.jpg
+        # Retrieved 12 December 2023
+        ("c8.staticflickr.com/6/5159/14288803431_7cf094b085_b.jpg", "14288803431"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:

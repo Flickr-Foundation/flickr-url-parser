@@ -166,6 +166,12 @@ def parse_flickr_url(url: str) -> ParseResult:
         ):
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
+        if (
+            u.path
+            and re.match(r"^c[0-9]+\.staticflickr\.com$", u.path[0].lower()) is not None
+        ):
+            u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
+
     # If this URL doesn't come from Flickr.com, then we can't possibly classify
     # it as a Flickr URL!
     is_long_url = u.host.lower() in {"www.flickr.com", "flickr.com"}
@@ -176,6 +182,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         or re.match(r"^photos[0-9]+\.flickr\.com$", u.host) is not None
         or re.match(r"^farm[0-9]+\.static\.flickr\.com$", u.host) is not None
         or re.match(r"^farm[0-9]+\.staticflickr\.com$", u.host) is not None
+        or re.match(r"^c[0-9]+\.staticflickr\.com$", u.host) is not None
     )
 
     if not is_long_url and not is_short_url and not is_static_url:
@@ -297,6 +304,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     #     https://photos12.flickr.com/16159487_3a6615a565_b.jpg
     #     http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg
     #     https://farm5.staticflickr.com/4586/37767087695_bb4ecff5f4_o.jpg
+    #     https://c8.staticflickr.com/6/5159/14288803431_7cf094b085_b.jpg
     #
     # The exact format of these URLs is described in the Flickr docs:
     # https://www.flickr.com/services/api/misc.urls.html
@@ -313,6 +321,16 @@ def parse_flickr_url(url: str) -> ParseResult:
 
         if re.match(r"^photos\d+\.flickr\.com$", u.host) and len(u.path) >= 1:
             photo_id, *_ = u.path[0].split("_")
+            if is_digits(photo_id):
+                return {"type": "single_photo", "photo_id": photo_id}
+
+        if (
+            re.match(r"^c\d+\.staticflickr\.com$", u.host)
+            and len(u.path) == 3
+            and is_digits(u.path[0])
+            and is_digits(u.path[1])
+        ):
+            photo_id, *_ = u.path[2].split("_")
             if is_digits(photo_id):
                 return {"type": "single_photo", "photo_id": photo_id}
 
