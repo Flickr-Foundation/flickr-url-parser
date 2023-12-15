@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.6.1 - 2023-12-15
+
+*   Fix a bug where the URL parser could throw an IndexError on URL fragments or empty strings.
+
 ## v1.6.0 - 2023-12-12
 
 *   Add a new function `find_flickr_urls_in_text` which can be used to find Flickr URLs in a block of arbitrary text.
