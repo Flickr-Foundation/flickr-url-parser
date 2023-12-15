@@ -13,10 +13,12 @@ from flickr_url_parser._types import Album, Gallery, Group, Tag
 @pytest.mark.parametrize(
     "url",
     [
-        "" "1.2.3.4",
+        "",
+        "1.2.3.4",
         "https://example.net",
         "ftp://s3.amazonaws.com/my-bukkit/object.txt",
         "http://http://",
+        "#cite_note-1",
     ],
 )
 def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:

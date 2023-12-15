@@ -151,7 +151,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     #
     # which allows the rest of the logic in the function to do
     # the "right thing" with this URL.
-    if not url.startswith("http"):
+    if not url.startswith("http") and len(u.path) >= 1:
         if u.path[0].lower() in {
             "www.flickr.com",
             "flickr.com",
@@ -161,23 +161,16 @@ def parse_flickr_url(url: str) -> ParseResult:
         }:
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
-        if (
-            u.path
-            and re.match(r"^photos[0-9]+\.flickr\.com$", u.path[0].lower()) is not None
-        ):
+        elif re.match(r"^photos[0-9]+\.flickr\.com$", u.path[0].lower()) is not None:
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
-        if (
-            u.path
-            and re.match(r"^farm[0-9]+\.static\.?flickr\.com$", u.path[0].lower())
+        elif (
+            re.match(r"^farm[0-9]+\.static\.?flickr\.com$", u.path[0].lower())
             is not None
         ):
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
-        if (
-            u.path
-            and re.match(r"^c[0-9]+\.staticflickr\.com$", u.path[0].lower()) is not None
-        ):
+        elif re.match(r"^c[0-9]+\.staticflickr\.com$", u.path[0].lower()) is not None:
             u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
 
     # If this URL doesn't come from Flickr.com, then we can't possibly classify
