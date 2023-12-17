@@ -1,6 +1,10 @@
 from typing import Literal, TypedDict
 
 
+class Homepage(TypedDict):
+    type: Literal["homepage"]
+
+
 class SinglePhoto(TypedDict):
     type: Literal["single_photo"]
     photo_id: str
@@ -37,4 +41,4 @@ class Tag(TypedDict):
     page: int
 
 
-ParseResult = SinglePhoto | Album | User | Group | Gallery | Tag
+ParseResult = Homepage | SinglePhoto | Album | User | Group | Gallery | Tag

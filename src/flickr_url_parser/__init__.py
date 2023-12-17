@@ -7,7 +7,7 @@ from flickr_url_parser.base58 import is_base58, base58_decode
 from flickr_url_parser._types import ParseResult
 from .matcher import find_flickr_urls_in_text
 
-__version__ = "1.6.1"
+__version__ = "1.7.0"
 
 
 class NotAFlickrUrl(Exception):
@@ -93,6 +93,8 @@ def parse_flickr_url(url: str) -> ParseResult:
         {"type": "single_photo", "photo_id": "50567413447"}
 
     Possible values for ``type``:
+
+    -   ``homepage``
 
     -   ``single_photo``
             This will include a single extra key: ``photo_id``.
@@ -235,6 +237,10 @@ def parse_flickr_url(url: str) -> ParseResult:
         except Exception as e:
             print(e)
             pass
+
+    # The URL for the homepage, e.g. https://www.flickr.com/
+    if is_long_url and len(u.path) == 0 and len(u.query) == 0 and u.fragment == "":
+        return {"type": "homepage"}
 
     # The URL for a single photo, e.g.
     # https://www.flickr.com/photos/coast_guard/32812033543/

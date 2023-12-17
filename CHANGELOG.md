@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v1.7.0 - 2023-12-17
+
+Add support for recognising URLs as the Flickr homepage.
+
+There are lots of varieties of homepage URL that appear in e.g. links from Wikimedia Commons, and now they can be recognised:
+
+```pycon
+>>> parse_flickr_url("www.flickr.com")
+{"type": "homepage"}
+```
+
 ## v1.6.1 - 2023-12-15
 
 *   Fix a bug where the URL parser could throw an IndexError on URL fragments or empty strings.
