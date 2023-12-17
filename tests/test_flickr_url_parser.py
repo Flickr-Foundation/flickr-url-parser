@@ -29,8 +29,6 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
 @pytest.mark.parametrize(
     "url",
     [
-        "flickr.com",
-        "https://www.flickr.com",
         "https://www.flickr.com/account/email",
         "https://www.flickr.com/photo_zoom.gne",
         "https://www.flickr.com/photo_zoom.gne?id=unknown",
@@ -77,6 +75,25 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
         "type": "single_photo",
         "photo_id": "32812033543",
     }
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://www.flickr.com",
+        "https://www.flickr.com/",
+        "http://www.flickr.com",
+        "http://www.flickr.com/",
+        "https://flickr.com",
+        "https://flickr.com/",
+        "http://flickr.com",
+        "http://flickr.com/",
+        "www.flickr.com",
+        "flickr.com",
+    ],
+)
+def test_it_can_parse_the_homepage(url: str) -> None:
+    assert parse_flickr_url(url) == {"type": "homepage"}
 
 
 @pytest.mark.parametrize(
