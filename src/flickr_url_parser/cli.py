@@ -1,13 +1,11 @@
-from typing import List
-
 import json
 import sys
 import textwrap
 
-from flickr_url_parser import parse_flickr_url, __version__
+from . import parse_flickr_url, __version__
 
 
-def run_cli(argv: List[str]) -> int:
+def run_cli(argv: list[str]) -> int:
     try:
         url = argv[1]
     except IndexError:
