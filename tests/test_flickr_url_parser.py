@@ -7,7 +7,7 @@ from flickr_url_parser import (
     NotAFlickrUrl,
     UnrecognisedUrl,
 )
-from flickr_url_parser._types import Album, Gallery, Group, Tag
+from flickr_url_parser.types import Album, Gallery, Group, Tag
 
 
 @pytest.mark.parametrize(
