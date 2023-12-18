@@ -1,5 +1,3 @@
-from typing import Dict
-
 import pytest
 
 from flickr_url_parser import (
@@ -7,7 +5,7 @@ from flickr_url_parser import (
     NotAFlickrUrl,
     UnrecognisedUrl,
 )
-from flickr_url_parser._types import Album, Gallery, Group, Tag
+from flickr_url_parser.types import Album, Gallery, Group, Tag
 
 
 @pytest.mark.parametrize(
@@ -413,7 +411,7 @@ def test_it_parses_a_short_flickr_url() -> None:
     ],
 )
 def test_it_parses_guest_pass_urls(
-    vcr_cassette: str, url: str, expected: Dict[str, str]
+    vcr_cassette: str, url: str, expected: dict[str, str]
 ) -> None:
     assert parse_flickr_url(url) == expected
 
