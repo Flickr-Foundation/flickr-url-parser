@@ -1,7 +1,7 @@
 # flickr-url-parser
 
 This is a library for parsing Flickr URLs.
-You enter a Flickr URL, and it tells you what sort of URL it is.
+You enter a Flickr URL, and it tells you what it points to – a single photo, an album, a gallery, and so on.
 
 Examples:
 
@@ -16,9 +16,24 @@ $ flickr_url_parser "https://www.flickr.com/photos/blueminds/page3"
 {"type": "user", "user_url": "https://www.flickr.com/photos/blueminds"}
 ```
 
-This was extracted as a standalone bit of functionality from [Flinumeratr], a toy that shows you a list of photos that can be viewed at a Flickr URL.
+## Motivation
 
-[Flinumeratr]: https://github.com/flickr-foundation/flinumeratr
+There's a lot of variety in Flickr URLs, even among URLs that point to the same thing.
+For example, all four of these URLs point to the same photo:
+
+```
+https://www.flickr.com/photos/sdasmarchives/50567413447
+http://flickr.com/photos/49487266@N07/50567413447
+https://www.flickr.com/photo.gne?id=50567413447
+https://live.staticflickr.com/65535/50567413447_afec74ef45_o_d.jpg
+```
+
+Dealing with all these variants can be tricky – this library aims to simplify that.
+We use it for [Flinumeratr], [Flickypedia], and other [Flickr Foundation] projects.
+
+[Flinumeratr]: https://www.flickr.org/tools/flinumeratr/
+[Flickypedia]: https://www.flickr.org/tools/flickypedia/
+[Flickr Foundation]: https://www.flickr.org/
 
 ## Usage
 
@@ -57,47 +72,7 @@ The only way to know if there are photos behind the URL is to (1) try to fetch t
 
 ## Development
 
-You can set up a local development environment by cloning the repo and installing dependencies:
-
-```console
-$ git clone https://github.com/Flickr-Foundation/flickr-url-parser.git
-$ cd flickr-url-parser
-$ python3 -m venv .venv
-$ source .venv/bin/activate
-$ pip install -e .
-```
-
-If you want to run tests, install the dev dependencies and run py.test:
-
-```console
-$ source .venv/bin/activate
-$ pip install -r dev_requirements.txt
-$ coverage run -m pytest tests
-$ coverage report
-```
-
-To make changes to the library:
-
-1.  Create a new branch
-2.  Push your changes to GitHub
-3.  Open a pull request
-4.  Fix any issues flagged by GitHub Actions (including tests, code linting, and type checking)
-5.  Ask somebody to review your change
-6.  Merge it!
-
-To create a new version on PyPI:
-
-1.  Update the version in `src/flickr_url_parser/__init__.py`
-2.  Add release notes in `CHANGELOG.md` and push a new tag to GitHub
-3.  Deploy the release using twine:
-
-    ```console
-    $ python3 -m build
-    $ python3 -m twine upload dist/* --username=__token__
-    ```
-
-    You will need [a PyPI API token](https://pypi.org/help/#apitoken) to publish packages.
-    This token is stored in 1Password.
+If you want to make changes to the library, there are instructions in [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Useful reading
 
