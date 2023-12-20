@@ -271,19 +271,32 @@ def parse_flickr_url(url: str) -> ParseResult:
     #     https://www.flickr.com/photo_zoom.gne?id=196155401&size=m
     #     https://www.flickr.com/photo_exif.gne?id=1427904898
     #     www.flickr.com/photo.gne?id=105
+    #     https://www.flickr.com/photo.gne?short=2ouuqFT
     #
     # Today this redirects to the /sizes/ or the /meta/ page, but it's quite
     # commonly used in e.g. Wikimedia Commons.
     if (
         is_long_url
         and len(u.path) == 1
-        and u.path[0] in {"photo_zoom.gne", "photo_exif.gne", "photo.gne"}
+        and u.path[0]
+        in {"photo_zoom.gne", "photo_exif.gne", "photo.gne", "photo_edit.gne"}
         and len(u.get("id")) == 1
     ):
         photo_id = u.get("id")[0]
 
         if isinstance(photo_id, str) and is_digits(photo_id):
             return {"type": "single_photo", "photo_id": photo_id}
+
+    if (
+        is_long_url
+        and len(u.path) == 1
+        and u.path[0] == "photo.gne"
+        and len(u.get("short")) == 1
+    ):
+        short_id = u.get("short")[0]
+
+        if isinstance(short_id, str) and is_base58(short_id):
+            return {"type": "single_photo", "photo_id": base58_decode(short_id)}
 
     # The URL for an actual file, e.g.
     #

@@ -49,6 +49,7 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "https://farm5.staticflickr.com/4586/377abc695_bb4ecff5f4_o.jpg",
         "https://c8.staticflickr.com/6/5159/142abc431_7cf094b085_b.jpg",
         "farm3.static.flickr.com",
+        "https://www.flickr.com/photo.gne?short=-1",
     ],
 )
 def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
@@ -151,6 +152,14 @@ def test_it_can_parse_the_homepage(url: str) -> None:
         # From https://commons.wikimedia.org/wiki/File:75016-75017_Avenues_Foch_et_de_la_Grande_Armée_20050919.jpg
         # Retrieved 12 December 2023
         ("https://www.flickr.com/photos/joyoflife//44627174", "44627174"),
+        #
+        # From https://commons.wikimedia.org/wiki/File:The_Peace_Hat_and_President_Chester_Arthur,_1829_-_1886_(3435827496).jpg
+        # Retrieved 20 December 2023
+        ("www.flickr.com/photo_edit.gne?id=3435827496", "3435827496"),
+        #
+        # From https://commons.wikimedia.org/wiki/File:Mars_-_Valles_Marineris,_Melas_Chasma_-_ESA_Mars_Express_(52830681359).png
+        # Retrieved 20 December 2023
+        ("https://www.flickr.com/photo.gne?short=2ouuqFT", "52830949513"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
