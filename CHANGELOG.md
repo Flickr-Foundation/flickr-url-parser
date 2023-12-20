@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.7.1 - 2023-12-20
+
+*   Add support for recognising URLs that use `/photo_edit.gne?id=[ID]` and `/photo.gne?short=[SHORT_ID]`.
+
 ## v1.7.0 - 2023-12-17
 
 Add support for recognising URLs as the Flickr homepage.
