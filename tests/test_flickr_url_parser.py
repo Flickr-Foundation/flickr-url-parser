@@ -1,11 +1,19 @@
 import pytest
 
 from flickr_url_parser import (
+    is_flickr_user_id,
     parse_flickr_url,
     NotAFlickrUrl,
     UnrecognisedUrl,
 )
 from flickr_url_parser.types import Album, Gallery, Group, Tag
+
+
+@pytest.mark.parametrize(
+    ["text", "result"], [("47265398@N04", True), ("blueminds", False), ("", False)]
+)
+def test_is_flickr_user_id(text: str, result: bool) -> None:
+    assert is_flickr_user_id(text) == result
 
 
 @pytest.mark.parametrize(
@@ -245,7 +253,26 @@ def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: str, url: str) -> No
 def test_it_parses_a_user(url: str) -> None:
     assert parse_flickr_url(url) == {
         "type": "user",
-        "user_url": "https://www.flickr.com/photos/blueminds",
+        "user_url": "https://www.flickr.com/photos/blueminds/",
+        "user_id": None,
+        "page": 1,
+    }
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://www.flickr.com/photos/47265398@N04/",
+        "https://www.flickr.com/people/47265398@N04/",
+        "https://www.flickr.com/photos/47265398@N04/albums",
+        "https://www.flickr.com/photos/47265398@N04/?saved=1",
+    ],
+)
+def test_it_parses_a_user_with_id(url: str) -> None:
+    assert parse_flickr_url(url) == {
+        "type": "user",
+        "user_url": "https://www.flickr.com/photos/47265398@N04/",
+        "user_id": "47265398@N04",
         "page": 1,
     }
 
@@ -253,7 +280,8 @@ def test_it_parses_a_user(url: str) -> None:
 def test_it_gets_page_information_about_user_urls() -> None:
     assert parse_flickr_url("https://www.flickr.com/photos/blueminds/page3") == {
         "type": "user",
-        "user_url": "https://www.flickr.com/photos/blueminds",
+        "user_url": "https://www.flickr.com/photos/blueminds/",
+        "user_id": None,
         "page": 3,
     }
 
@@ -261,7 +289,8 @@ def test_it_gets_page_information_about_user_urls() -> None:
 def test_it_parses_a_short_user_url(vcr_cassette: str) -> None:
     assert parse_flickr_url("https://flic.kr/ps/ZVcni") == {
         "type": "user",
-        "user_url": "https://www.flickr.com/photos/astrosamantha",
+        "user_url": "https://www.flickr.com/photos/astrosamantha/",
+        "user_id": None,
         "page": 1,
     }
 

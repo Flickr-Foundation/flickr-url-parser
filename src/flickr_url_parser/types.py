@@ -19,8 +19,9 @@ class Album(TypedDict):
 
 class User(TypedDict):
     type: Literal["user"]
-    user_url: str
     page: int
+    user_url: str
+    user_id: str | None
 
 
 class Group(TypedDict):
