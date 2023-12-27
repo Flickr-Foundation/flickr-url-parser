@@ -253,7 +253,7 @@ def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: str, url: str) -> No
 def test_it_parses_a_user(url: str) -> None:
     assert parse_flickr_url(url) == {
         "type": "user",
-        "user_url": "https://www.flickr.com/photos/blueminds",
+        "user_url": "https://www.flickr.com/photos/blueminds/",
         "page": 1,
     }
 
@@ -270,7 +270,7 @@ def test_it_parses_a_user(url: str) -> None:
 def test_it_parses_a_user_with_id(url: str) -> None:
     assert parse_flickr_url(url) == {
         "type": "user",
-        "user_url": "https://www.flickr.com/photos/47265398@N04",
+        "user_url": "https://www.flickr.com/photos/47265398@N04/",
         "id": "47265398@N04",
         "page": 1,
     }
@@ -279,7 +279,7 @@ def test_it_parses_a_user_with_id(url: str) -> None:
 def test_it_gets_page_information_about_user_urls() -> None:
     assert parse_flickr_url("https://www.flickr.com/photos/blueminds/page3") == {
         "type": "user",
-        "user_url": "https://www.flickr.com/photos/blueminds",
+        "user_url": "https://www.flickr.com/photos/blueminds/",
         "page": 3,
     }
 
@@ -287,7 +287,7 @@ def test_it_gets_page_information_about_user_urls() -> None:
 def test_it_parses_a_short_user_url(vcr_cassette: str) -> None:
     assert parse_flickr_url("https://flic.kr/ps/ZVcni") == {
         "type": "user",
-        "user_url": "https://www.flickr.com/photos/astrosamantha",
+        "user_url": "https://www.flickr.com/photos/astrosamantha/",
         "page": 1,
     }
 

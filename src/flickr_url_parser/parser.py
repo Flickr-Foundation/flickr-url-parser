@@ -390,7 +390,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         else:
             page = None
 
-        user_url = f"https://www.flickr.com/photos/{u.path[1]}"
+        user_url = f"https://www.flickr.com/photos/{u.path[1]}/"
 
         if page is not None:
             if is_flickr_user_id(u.path[1]):
