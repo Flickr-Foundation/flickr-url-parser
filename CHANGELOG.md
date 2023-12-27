@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v1.8.0 - 2023-12-27
+
+*   Add an optional `id` parameter to the `User` type.
+
+    If you parse the URL for a user's photostream and use the URL that contains their NSID rather than their path alias, this ID will be included in the response.
+    This allows for slightly faster lookups later.
+
 ## v1.7.1 - 2023-12-20
 
 *   Add support for recognising URLs that use `/photo_edit.gne?id=[ID]` and `/photo.gne?short=[SHORT_ID]`.

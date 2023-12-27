@@ -1,4 +1,4 @@
-from typing import Literal, NotRequired, TypedDict
+from typing import Literal, TypedDict
 
 
 class Homepage(TypedDict):
@@ -21,7 +21,7 @@ class User(TypedDict):
     type: Literal["user"]
     page: int
     user_url: str
-    id: NotRequired[str]
+    user_id: str | None
 
 
 class Group(TypedDict):

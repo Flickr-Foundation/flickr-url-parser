@@ -98,8 +98,11 @@ def parse_flickr_url(url: str) -> ParseResult:
             Look up the latter with Flickr's ``flickr.urls.lookupUser`` API.
 
     -   ``user``
-            This will include a single extra key: ``user_url``.
-            Look up the latter with Flickr's ``flickr.urls.lookupUser`` API.
+            This will include a single extra key: ``user_url``, and has an
+            optional key ``id``.
+
+            Look up the URL with Flickr's ``flickr.urls.lookupUser`` API,
+            the ID with the ``flickr.people.getInfo`` API.
 
     -   ``group``
             This will include a single extra key: ``group_url``.
@@ -381,6 +384,13 @@ def parse_flickr_url(url: str) -> ParseResult:
     #     https://www.flickr.com/photos/blueminds/?saved=1
     #
     if is_long_url and len(u.path) >= 2 and u.path[0] in {"photos", "people"}:
+        user_url = f"https://www.flickr.com/photos/{u.path[1]}/"
+
+        if is_flickr_user_id(u.path[1]):
+            user_id = u.path[1]
+        else:
+            user_id = None
+
         if len(u.path) == 2:
             page = 1
         elif len(u.path) == 3 and u.path[2] == "albums":
@@ -390,22 +400,13 @@ def parse_flickr_url(url: str) -> ParseResult:
         else:
             page = None
 
-        user_url = f"https://www.flickr.com/photos/{u.path[1]}/"
-
         if page is not None:
-            if is_flickr_user_id(u.path[1]):
-                return {
-                    "type": "user",
-                    "page": page,
-                    "user_url": user_url,
-                    "id": u.path[1],
-                }
-            else:
-                return {
-                    "type": "user",
-                    "page": page,
-                    "user_url": user_url,
-                }
+            return {
+                "type": "user",
+                "page": page,
+                "user_url": user_url,
+                "user_id": user_id,
+            }
 
     # URLs for a group, e.g.
     #
