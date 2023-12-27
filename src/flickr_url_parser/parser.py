@@ -63,6 +63,19 @@ def is_digits(path_component: str) -> bool:
     return re.match(r"^[0-9]+$", path_component) is not None
 
 
+def is_flickr_user_id(text: str) -> bool:
+    """
+    Returns True if ``text`` looks like a Flickr user ID, False otherwise.
+
+        >>> is_flickr_user_id("127885125@N05")
+        True
+        >>> is_flickr_user_id("everydayfilms")
+        False
+
+    """
+    return re.match(r"^[0-9]{5,11}@N[0-9]{2}$", text) is not None
+
+
 def parse_flickr_url(url: str) -> ParseResult:
     """
     Parse a Flickr URL and return some key information, e.g. whether it's
@@ -368,16 +381,31 @@ def parse_flickr_url(url: str) -> ParseResult:
     #     https://www.flickr.com/photos/blueminds/?saved=1
     #
     if is_long_url and len(u.path) >= 2 and u.path[0] in {"photos", "people"}:
+        if len(u.path) == 2:
+            page = 1
+        elif len(u.path) == 3 and u.path[2] == "albums":
+            page = 1
+        elif len(u.path) == 3 and is_page(u.path[2]):
+            page = get_page(u)
+        else:
+            page = None
+
         user_url = f"https://www.flickr.com/photos/{u.path[1]}"
 
-        if len(u.path) == 2:
-            return {"type": "user", "user_url": user_url, "page": 1}
-
-        if len(u.path) == 3 and u.path[2] == "albums":
-            return {"type": "user", "user_url": user_url, "page": 1}
-
-        if len(u.path) == 3 and is_page(u.path[2]):
-            return {"type": "user", "user_url": user_url, "page": get_page(u)}
+        if page is not None:
+            if is_flickr_user_id(u.path[1]):
+                return {
+                    "type": "user",
+                    "page": page,
+                    "user_url": user_url,
+                    "id": u.path[1],
+                }
+            else:
+                return {
+                    "type": "user",
+                    "page": page,
+                    "user_url": user_url,
+                }
 
     # URLs for a group, e.g.
     #
