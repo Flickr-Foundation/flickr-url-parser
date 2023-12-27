@@ -377,11 +377,7 @@ def parse_flickr_url(url: str) -> ParseResult:
             return {"type": "user", "user_url": user_url, "page": 1}
 
         if len(u.path) == 3 and is_page(u.path[2]):
-            return {
-                "type": "user",
-                "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
-                "page": get_page(u),
-            }
+            return {"type": "user", "user_url": user_url, "page": get_page(u)}
 
     # URLs for a group, e.g.
     #
