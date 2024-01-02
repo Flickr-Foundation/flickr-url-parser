@@ -58,6 +58,7 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "https://c8.staticflickr.com/6/5159/142abc431_7cf094b085_b.jpg",
         "farm3.static.flickr.com",
         "https://www.flickr.com/photo.gne?short=-1",
+        "https://www.flickr.com/apps/video/stewart.swf?photo_id=-1",
     ],
 )
 def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
@@ -168,6 +169,26 @@ def test_it_can_parse_the_homepage(url: str) -> None:
         # From https://commons.wikimedia.org/wiki/File:Mars_-_Valles_Marineris,_Melas_Chasma_-_ESA_Mars_Express_(52830681359).png
         # Retrieved 20 December 2023
         ("https://www.flickr.com/photo.gne?short=2ouuqFT", "52830949513"),
+        #
+        # This is the download URL from https://www.flickr.com/photos/196406308@N04/52947513801
+        # Retrieved 2 January 2024
+        ("https://www.flickr.com/video_download.gne?id=52947513801", "52947513801"),
+        #
+        # This is the download URL you get redirected to from
+        # https://www.flickr.com/photos/83699771@N00/52868534222
+        # Retrieved 2 January 2024
+        (
+            "https://live.staticflickr.com/video/52868534222/346a41e5a9/1080p.mp4",
+            "52868534222",
+        ),
+        #
+        # This URL comes from the flickr.photos.getSizes API for
+        # this photo.
+        # Retrieved 2 January 2024
+        (
+            "https://www.flickr.com/apps/video/stewart.swf?v=2968162862&photo_id=53262935176&photo_secret=06c382eee3",
+            "53262935176",
+        ),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
