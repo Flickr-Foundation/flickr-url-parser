@@ -318,42 +318,65 @@ def parse_flickr_url(url: str) -> ParseResult:
     #
     #     https://live.staticflickr.com/65535/53381630964_63d765ee92_s.jpg
     #     http://static.flickr.com/63/155697786_0125559b4e.jpg
-    #     https://photos12.flickr.com/16159487_3a6615a565_b.jpg
     #     http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg
     #     https://farm5.staticflickr.com/4586/37767087695_bb4ecff5f4_o.jpg
-    #     https://c8.staticflickr.com/6/5159/14288803431_7cf094b085_b.jpg
     #
     # The exact format of these URLs is described in the Flickr docs:
     # https://www.flickr.com/services/api/misc.urls.html
-    if is_static_url:
-        if (
-            (
-                u.host == "live.staticflickr.com"
-                or u.host == "static.flickr.com"
-                or re.match(r"^farm\d+\.staticflickr\.com$", u.host)
-                or re.match(r"^farm\d+\.static\.flickr\.com$", u.host)
-            )
-            and len(u.path) >= 1
-            and is_digits(u.path[0])
-        ):
-            photo_id, *_ = u.path[1].split("_")
-            if is_digits(photo_id):
-                return {"type": "single_photo", "photo_id": photo_id}
+    if (
+        is_static_url
+        and (
+            u.host == "live.staticflickr.com"
+            or u.host == "static.flickr.com"
+            or re.match(r"^farm\d+\.staticflickr\.com$", u.host)
+            or re.match(r"^farm\d+\.static\.flickr\.com$", u.host)
+        )
+        and len(u.path) >= 2
+        and is_digits(u.path[0])
+    ):
+        photo_id, *_ = u.path[1].split("_")
+        if is_digits(photo_id):
+            return {"type": "single_photo", "photo_id": photo_id}
 
-        if re.match(r"^photos\d+\.flickr\.com$", u.host) and len(u.path) >= 1:
-            photo_id, *_ = u.path[0].split("_")
-            if is_digits(photo_id):
-                return {"type": "single_photo", "photo_id": photo_id}
+    # The URL for a static video file, e.g.
+    #
+    #     https://live.staticflickr.com/video/52868534222/346a41e5a9/1080p.mp4
+    #
+    if (
+        is_static_url
+        and u.host == "live.staticflickr.com"
+        and len(u.path) >= 2
+        and u.path[0] == "video"
+        and is_digits(u.path[1])
+    ):
+        return {"type": "single_photo", "photo_id": u.path[1]}
 
-        if (
-            re.match(r"^c\d+\.staticflickr\.com$", u.host)
-            and len(u.path) == 3
-            and is_digits(u.path[0])
-            and is_digits(u.path[1])
-        ):
-            photo_id, *_ = u.path[2].split("_")
-            if is_digits(photo_id):
-                return {"type": "single_photo", "photo_id": photo_id}
+    # The URL for a static file, e.g.
+    #
+    #     https://photos12.flickr.com/16159487_3a6615a565_b.jpg
+    #
+    if (
+        is_static_url
+        and re.match(r"^photos\d+\.flickr\.com$", u.host)
+        and len(u.path) >= 1
+    ):
+        photo_id, *_ = u.path[0].split("_")
+        if is_digits(photo_id):
+            return {"type": "single_photo", "photo_id": photo_id}
+
+    # The URL for a static file, e.g.
+    #
+    #     https://c8.staticflickr.com/6/5159/14288803431_7cf094b085_b.jpg
+    #
+    if is_static_url and (
+        re.match(r"^c\d+\.staticflickr\.com$", u.host)
+        and len(u.path) == 3
+        and is_digits(u.path[0])
+        and is_digits(u.path[1])
+    ):
+        photo_id, *_ = u.path[2].split("_")
+        if is_digits(photo_id):
+            return {"type": "single_photo", "photo_id": photo_id}
 
     # The URL for an album, e.g.
     #

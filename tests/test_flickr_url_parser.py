@@ -172,6 +172,14 @@ def test_it_can_parse_the_homepage(url: str) -> None:
         # This is the download URL from https://www.flickr.com/photos/196406308@N04/52947513801
         # Retrieved 2 January 2024
         ("https://www.flickr.com/video_download.gne?id=52947513801", "52947513801"),
+        #
+        # This is the download URL you get redirected to from
+        # https://www.flickr.com/photos/83699771@N00/52868534222
+        # Retrieved 2 January 2024
+        (
+            "https://live.staticflickr.com/video/52868534222/346a41e5a9/1080p.mp4",
+            "52868534222",
+        ),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
