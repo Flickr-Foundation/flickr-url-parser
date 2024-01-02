@@ -480,4 +480,18 @@ def parse_flickr_url(url: str) -> ParseResult:
     ):
         return {"type": "tag", "tag": u.path[2], "page": get_page(u)}
 
+    # URL for the Flash player for a video, e.g.
+    #
+    #     https://www.flickr.com/apps/video/stewart.swf?photo_id=53262935176&…
+    #
+    if (
+        is_long_url
+        and u.path == ("apps", "video", "stewart.swf")
+        and len(u.get("photo_id")) == 1
+    ):
+        photo_id = u.get("photo_id")[0]
+
+        if isinstance(photo_id, str) and is_digits(photo_id):
+            return {"type": "single_photo", "photo_id": photo_id}
+
     raise UnrecognisedUrl(f"Unrecognised URL: {url}")

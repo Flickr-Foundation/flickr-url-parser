@@ -4,6 +4,7 @@
 
 *   Add support for recognising video download URLs like `/video_download.gne?id=[ID]`.
 *   Add support for recognising static video URLs like `https://live.staticflickr.com/video/…`.
+*   Add support for recognising Flash player video URLs like `https://www.flickr.com/apps/video/stewart.swf?photo_id=…`.
 
 ## v1.8.0 - 2023-12-27
 
@@ -35,7 +36,7 @@ There are lots of varieties of homepage URL that appear in e.g. links from Wikim
 
 *   Add a new function `find_flickr_urls_in_text` which can be used to find Flickr URLs in a block of arbitrary text.
     Example:
-    
+
     ```pycon
     >>> text = """
     ... This is the help page: https://www.flickr.com/help
@@ -45,7 +46,7 @@ There are lots of varieties of homepage URL that appear in e.g. links from Wikim
     >>> find_flickr_urls_in_text(text)
     ['https://www.flickr.com/help', 'https://www.flickr.com/photos/mariakallin/']
     ```
-    
+
     This is useful for text analysis.
 
 ## v1.5.3 - 2023-12-12
