@@ -168,6 +168,10 @@ def test_it_can_parse_the_homepage(url: str) -> None:
         # From https://commons.wikimedia.org/wiki/File:Mars_-_Valles_Marineris,_Melas_Chasma_-_ESA_Mars_Express_(52830681359).png
         # Retrieved 20 December 2023
         ("https://www.flickr.com/photo.gne?short=2ouuqFT", "52830949513"),
+        #
+        # This is the download URL from https://www.flickr.com/photos/196406308@N04/52947513801
+        # Retrieved 2 January 2024
+        ("https://www.flickr.com/video_download.gne?id=52947513801", "52947513801"),
     ],
 )
 def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:

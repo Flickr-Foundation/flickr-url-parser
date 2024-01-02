@@ -294,8 +294,8 @@ def parse_flickr_url(url: str) -> ParseResult:
     if (
         is_long_url
         and len(u.path) == 1
-        and u.path[0]
-        in {"photo_zoom.gne", "photo_exif.gne", "photo.gne", "photo_edit.gne"}
+        and u.path[0].startswith(("photo", "video"))
+        and u.path[0].endswith(".gne")
         and len(u.get("id")) == 1
     ):
         photo_id = u.get("id")[0]

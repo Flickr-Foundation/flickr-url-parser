@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.8.1 - 2024-01-02
+
+*   Add support for recognising URLs that use `/video_download.gne?id=[ID]`.
+
 ## v1.8.0 - 2023-12-27
 
 *   Add an optional `id` parameter to the `User` type.
