@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.8.2 - 2024-02-02
+
+*   Throw a more informative error if you pass a non-string value as ``url``.
+
 ## v1.8.1 - 2024-01-02
 
 *   Add support for recognising video download URLs like `/video_download.gne?id=[ID]`.
