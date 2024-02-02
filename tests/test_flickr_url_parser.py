@@ -478,3 +478,8 @@ def test_it_parses_guest_pass_urls(
 def test_it_doesnt_parse_a_broken_guest_pass_url(vcr_cassette: str) -> None:
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url="https://www.flickr.com/gp/1234/doesnotexist")
+
+
+def test_a_non_string_is_an_error() -> None:
+    with pytest.raises(TypeError, match="Bad type for `url`: expected str, got int!"):
+        parse_flickr_url(url=-1)  # type: ignore

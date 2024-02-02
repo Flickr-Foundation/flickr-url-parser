@@ -119,6 +119,9 @@ def parse_flickr_url(url: str) -> ParseResult:
     or ``UnrecognisedUrl`` exceptions.
 
     """
+    if not isinstance(url, str):
+        raise TypeError(f"Bad type for `url`: expected str, got {type(url).__name__}!")
+
     try:
         u = hyperlink.URL.from_text(url.rstrip("/"))
 
