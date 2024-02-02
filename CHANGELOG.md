@@ -2,7 +2,7 @@
 
 ## v1.8.2 - 2024-02-02
 
-*   Throw a more informative error if you pass a non-string value as ``url``.
+*   Throw a more informative TypeError if you pass a non-string value as ``url``.
 
 ## v1.8.1 - 2024-01-02
 
