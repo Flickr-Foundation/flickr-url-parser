@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.8.3 - 2024-04-30
+
+*   Add a trailing slash to the `user_url` returned in album URLs. This more closely matches the URL structured used on Flickr.com.
+
 ## v1.8.2 - 2024-02-02
 
 *   Throw a more informative TypeError if you pass a non-string value as ``url``.

@@ -205,7 +205,7 @@ def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
             "https://www.flickr.com/photos/cat_tac/albums/72157666833379009",
             {
                 "type": "album",
-                "user_url": "https://www.flickr.com/photos/cat_tac",
+                "user_url": "https://www.flickr.com/photos/cat_tac/",
                 "album_id": "72157666833379009",
                 "page": 1,
             },
@@ -214,7 +214,7 @@ def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
             "https://www.flickr.com/photos/cat_tac/sets/72157666833379009",
             {
                 "type": "album",
-                "user_url": "https://www.flickr.com/photos/cat_tac",
+                "user_url": "https://www.flickr.com/photos/cat_tac/",
                 "album_id": "72157666833379009",
                 "page": 1,
             },
@@ -223,7 +223,7 @@ def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
             "https://www.flickr.com/photos/andygocher/albums/72157648252420622/page3",
             {
                 "type": "album",
-                "user_url": "https://www.flickr.com/photos/andygocher",
+                "user_url": "https://www.flickr.com/photos/andygocher/",
                 "album_id": "72157648252420622",
                 "page": 3,
             },
@@ -244,7 +244,7 @@ def test_it_parses_an_album(url: str, album: Album) -> None:
 def test_it_parses_a_short_album_url(vcr_cassette: str, url: str) -> None:
     assert parse_flickr_url(url) == {
         "type": "album",
-        "user_url": "https://www.flickr.com/photos/64527945@N07",
+        "user_url": "https://www.flickr.com/photos/64527945@N07/",
         "album_id": "72157628959784871",
         "page": 1,
     }
@@ -455,7 +455,7 @@ def test_it_parses_a_short_flickr_url() -> None:
             "https://www.flickr.com/gp/realphotomatt/M195SLkj98",
             {
                 "type": "album",
-                "user_url": "https://www.flickr.com/photos/realphotomatt",
+                "user_url": "https://www.flickr.com/photos/realphotomatt/",
                 "album_id": "72177720312002426",
                 "page": 1,
             },
