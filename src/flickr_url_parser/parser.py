@@ -396,7 +396,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     ):
         return {
             "type": "album",
-            "user_url": f"https://www.flickr.com/photos/{u.path[1]}",
+            "user_url": f"https://www.flickr.com/photos/{u.path[1]}/",
             "album_id": u.path[3],
             "page": get_page(u),
         }
