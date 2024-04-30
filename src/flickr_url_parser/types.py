@@ -1,43 +1,43 @@
-from typing import Literal, TypedDict
+import typing
 
 
-class Homepage(TypedDict):
-    type: Literal["homepage"]
+class Homepage(typing.TypedDict):
+    type: typing.Literal["homepage"]
 
 
-class SinglePhoto(TypedDict):
-    type: Literal["single_photo"]
+class SinglePhoto(typing.TypedDict):
+    type: typing.Literal["single_photo"]
     photo_id: str
 
 
-class Album(TypedDict):
-    type: Literal["album"]
+class Album(typing.TypedDict):
+    type: typing.Literal["album"]
     user_url: str
     album_id: str
     page: int
 
 
-class User(TypedDict):
-    type: Literal["user"]
+class User(typing.TypedDict):
+    type: typing.Literal["user"]
     page: int
     user_url: str
     user_id: str | None
 
 
-class Group(TypedDict):
-    type: Literal["group"]
+class Group(typing.TypedDict):
+    type: typing.Literal["group"]
     group_url: str
     page: int
 
 
-class Gallery(TypedDict):
-    type: Literal["gallery"]
+class Gallery(typing.TypedDict):
+    type: typing.Literal["gallery"]
     gallery_id: str
     page: int
 
 
-class Tag(TypedDict):
-    type: Literal["tag"]
+class Tag(typing.TypedDict):
+    type: typing.Literal["tag"]
     tag: str
     page: int
 
