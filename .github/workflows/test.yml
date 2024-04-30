@@ -12,15 +12,16 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.12"]
+
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.12
+        cache: pip
+
     - name: Install dependencies
       run: |
         pip install -r dev_requirements.txt
@@ -35,7 +36,11 @@ jobs:
         # W503 = line break before binary operator; this is something added
         # by black and I don't have a strong opinion on, so I'm going to trust
         # black and have flake8 ignore it.
-        flake8 --ignore=E501,W503
+        #
+        # E231 = an issue on Python 3.12 because we're running an old version
+        # of pycodestyle.  We can drop it when we can run pycodestyle 2.11.0
+        # or later.  See https://github.com/PyCQA/flake8/issues/1845
+        flake8 --ignore=E501,W503,E231
     - name: Check types
       run: mypy src tests
     - name: Run tests
