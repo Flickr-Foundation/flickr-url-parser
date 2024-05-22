@@ -3,7 +3,7 @@ from .matcher import find_flickr_urls_in_text
 from .parser import is_flickr_user_id, parse_flickr_url
 from .types import ParseResult
 
-__version__ = "1.8.3"
+__version__ = "1.9.0"
 
 
 __all__ = [

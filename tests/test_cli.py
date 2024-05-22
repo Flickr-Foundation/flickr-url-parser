@@ -19,6 +19,8 @@ def test_run_cli(capsys: CaptureFixture[str]) -> None:
     assert json.loads(captured.out) == {
         "type": "single_photo",
         "photo_id": "32812033543",
+        "user_url": "https://www.flickr.com/photos/coast_guard/",
+        "user_id": None,
     }
     assert captured.err == ""
 

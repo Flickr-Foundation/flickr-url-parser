@@ -8,6 +8,17 @@ class Homepage(typing.TypedDict):
 class SinglePhoto(typing.TypedDict):
     type: typing.Literal["single_photo"]
     photo_id: str
+    user_url: str | None
+    user_id: str | None
+
+
+def anonymous_single_photo(photo_id: str) -> SinglePhoto:
+    return {
+        "type": "single_photo",
+        "photo_id": photo_id,
+        "user_url": None,
+        "user_id": None,
+    }
 
 
 class Album(typing.TypedDict):
