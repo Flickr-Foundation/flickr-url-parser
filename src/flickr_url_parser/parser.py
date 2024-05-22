@@ -5,7 +5,7 @@ import hyperlink
 
 from .base58 import is_base58, base58_decode
 from .exceptions import NotAFlickrUrl, UnrecognisedUrl
-from .types import ParseResult
+from .types import anonymous_single_photo, ParseResult
 
 
 def get_page(url: hyperlink.URL) -> int:
@@ -250,10 +250,20 @@ def parse_flickr_url(url: str) -> ParseResult:
         and u.path[0] == "photos"
         and is_digits(u.path[2])
     ):
-        return {
-            "type": "single_photo",
-            "photo_id": u.path[2],
-        }
+        if is_flickr_user_id(u.path[1].upper()):
+            return {
+                "type": "single_photo",
+                "photo_id": u.path[2],
+                "user_url": f"https://www.flickr.com/photos/{u.path[1].upper()}/",
+                "user_id": u.path[1].upper(),
+            }
+        else:
+            return {
+                "type": "single_photo",
+                "photo_id": u.path[2],
+                "user_url": f"https://www.flickr.com/photos/{u.path[1]}/",
+                "user_id": None,
+            }
 
     # Old-style URLs for a single photo, e.g.
     # http://flickr.com/photo/17277074@N00/2619974961
@@ -271,10 +281,20 @@ def parse_flickr_url(url: str) -> ParseResult:
         and u.path[0] == "photo"
         and is_digits(u.path[2])
     ):
-        return {
-            "type": "single_photo",
-            "photo_id": u.path[2],
-        }
+        if is_flickr_user_id(u.path[1].upper()):
+            return {
+                "type": "single_photo",
+                "photo_id": u.path[2],
+                "user_url": f"https://www.flickr.com/photos/{u.path[1].upper()}/",
+                "user_id": u.path[1].upper(),
+            }
+        else:
+            return {
+                "type": "single_photo",
+                "photo_id": u.path[2],
+                "user_url": f"https://www.flickr.com/photos/{u.path[1]}/",
+                "user_id": None,
+            }
 
     # The URL for a single photo, e.g.
     #
@@ -283,7 +303,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     # Here the final path component is a base-58 conversion of the photo ID.
     # See https://www.flickr.com/groups/51035612836@N01/discuss/72157616713786392/
     if is_short_url and len(u.path) == 2 and u.path[0] == "p" and is_base58(u.path[1]):
-        return {"type": "single_photo", "photo_id": base58_decode(u.path[1])}
+        return anonymous_single_photo(photo_id=base58_decode(u.path[1]))
 
     # Another variant of URL for a single photo, e.g.
     #
@@ -304,7 +324,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         photo_id = u.get("id")[0]
 
         if isinstance(photo_id, str) and is_digits(photo_id):
-            return {"type": "single_photo", "photo_id": photo_id}
+            return anonymous_single_photo(photo_id)
 
     if (
         is_long_url
@@ -315,7 +335,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         short_id = u.get("short")[0]
 
         if isinstance(short_id, str) and is_base58(short_id):
-            return {"type": "single_photo", "photo_id": base58_decode(short_id)}
+            return anonymous_single_photo(photo_id=base58_decode(short_id))
 
     # The URL for an actual file, e.g.
     #
@@ -339,7 +359,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     ):
         photo_id, *_ = u.path[1].split("_")
         if is_digits(photo_id):
-            return {"type": "single_photo", "photo_id": photo_id}
+            return anonymous_single_photo(photo_id)
 
     # The URL for a static video file, e.g.
     #
@@ -352,7 +372,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         and u.path[0] == "video"
         and is_digits(u.path[1])
     ):
-        return {"type": "single_photo", "photo_id": u.path[1]}
+        return anonymous_single_photo(photo_id=u.path[1])
 
     # The URL for a static file, e.g.
     #
@@ -365,7 +385,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     ):
         photo_id, *_ = u.path[0].split("_")
         if is_digits(photo_id):
-            return {"type": "single_photo", "photo_id": photo_id}
+            return anonymous_single_photo(photo_id)
 
     # The URL for a static file, e.g.
     #
@@ -379,7 +399,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     ):
         photo_id, *_ = u.path[2].split("_")
         if is_digits(photo_id):
-            return {"type": "single_photo", "photo_id": photo_id}
+            return anonymous_single_photo(photo_id)
 
     # The URL for an album, e.g.
     #
@@ -495,6 +515,6 @@ def parse_flickr_url(url: str) -> ParseResult:
         photo_id = u.get("photo_id")[0]
 
         if isinstance(photo_id, str) and is_digits(photo_id):
-            return {"type": "single_photo", "photo_id": photo_id}
+            return anonymous_single_photo(photo_id)
 
     raise UnrecognisedUrl(f"Unrecognised URL: {url}")

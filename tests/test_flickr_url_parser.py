@@ -6,7 +6,7 @@ from flickr_url_parser import (
     NotAFlickrUrl,
     UnrecognisedUrl,
 )
-from flickr_url_parser.types import Album, Gallery, Group, Tag
+from flickr_url_parser.types import Album, Gallery, Group, SinglePhoto, Tag
 
 
 @pytest.mark.parametrize(
@@ -75,13 +75,14 @@ def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
         "http://flickr.com/photos/coast_guard/32812033543",
         "www.flickr.com/photos/coast_guard/32812033543",
         "flickr.com/photos/coast_guard/32812033543",
-        "live.staticflickr.com/2903/32812033543_c1b3784192_w_d.jpg",
     ],
 )
 def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
     assert parse_flickr_url(url) == {
         "type": "single_photo",
         "photo_id": "32812033543",
+        "user_url": "https://www.flickr.com/photos/coast_guard/",
+        "user_id": None,
     }
 
 
@@ -105,29 +106,142 @@ def test_it_can_parse_the_homepage(url: str) -> None:
 
 
 @pytest.mark.parametrize(
-    ["url", "photo_id"],
+    ["url", "single_photo"],
     [
-        ("https://www.flickr.com/photos/coast_guard/32812033543", "32812033543"),
+        (
+            "https://www.flickr.com/photos/coast_guard/32812033543",
+            {
+                "type": "single_photo",
+                "photo_id": "32812033543",
+                "user_url": "https://www.flickr.com/photos/coast_guard/",
+                "user_id": None,
+            },
+        ),
         (
             "https://www.flickr.com/photos/coast_guard/32812033543/in/photolist-RZufqg-ebEcP7-YvCkaU-2dKrfhV-6o5anp-7ZjJuj-fxZTiu-2c1pGwi-JbqooJ-TaNkv5-ehrqn7-2aYFaRh-QLDxJX-2dKrdip-JB7iUz-ehrsNh-2aohZ14-Rgeuo3-JRwKwE-ksAR6U-dZVQ3m-291gkvk-26ynYWn-pHMQyE-a86UD8-9Tpmru-hamg6T-8ZCRFU-QY8amt-2eARQfP-qskFkD-2c1pG1Z-jbCpyF-fTBQDa-a89xfd-a7kYMs-dYjL51-5XJgXY-8caHdL-a89HZd-9GBmft-xy7PBo-sai77d-Vs8YPG-RgevC7-Nv5CF6-e4ZLn9-cPaxqS-9rnjS9-8Y7mhm",
-            "32812033543",
+            {
+                "type": "single_photo",
+                "photo_id": "32812033543",
+                "user_url": "https://www.flickr.com/photos/coast_guard/",
+                "user_id": None,
+            },
         ),
         (
             "https://www.flickr.com/photos/britishlibrary/13874001214/in/album-72157644007437024/",
-            "13874001214",
+            {
+                "type": "single_photo",
+                "photo_id": "13874001214",
+                "user_url": "https://www.flickr.com/photos/britishlibrary/",
+                "user_id": None,
+            },
         ),
-        ("https://www.Flickr.com/photos/techiedog/44257407", "44257407"),
-        ("www.Flickr.com/photos/techiedog/44257407", "44257407"),
+        (
+            "https://www.Flickr.com/photos/techiedog/44257407",
+            {
+                "type": "single_photo",
+                "photo_id": "44257407",
+                "user_url": "https://www.flickr.com/photos/techiedog/",
+                "user_id": None,
+            },
+        ),
+        (
+            "www.Flickr.com/photos/techiedog/44257407",
+            {
+                "type": "single_photo",
+                "photo_id": "44257407",
+                "user_url": "https://www.flickr.com/photos/techiedog/",
+                "user_id": None,
+            },
+        ),
         (
             "https://www.flickr.com/photos/tanaka_juuyoh/1866762301/sizes/o/in/set-72157602201101937",
-            "1866762301",
+            {
+                "type": "single_photo",
+                "photo_id": "1866762301",
+                "user_url": "https://www.flickr.com/photos/tanaka_juuyoh/",
+                "user_id": None,
+            },
         ),
-        ("https://www.flickr.com/photos/11588490@n02/2174280796/sizes/l", "2174280796"),
-        ("https://www.flickr.com/photos/nrcs_south_dakota/8023844010/in", "8023844010"),
+        #
+        # Strictly speaking this URL is invalid, because of the lowercase @n02,
+        # which should be uppercase.  But we know what you meant, so parse it anyway.
+        (
+            "https://www.flickr.com/photos/11588490@n02/2174280796/sizes/l",
+            {
+                "type": "single_photo",
+                "photo_id": "2174280796",
+                "user_url": "https://www.flickr.com/photos/11588490@N02/",
+                "user_id": "11588490@N02",
+            },
+        ),
+        (
+            "https://www.flickr.com/photos/nrcs_south_dakota/8023844010/in",
+            {
+                "type": "single_photo",
+                "photo_id": "8023844010",
+                "user_url": "https://www.flickr.com/photos/nrcs_south_dakota/",
+                "user_id": None,
+            },
+        ),
         (
             "https://www.flickr.com/photos/chucksutherland/6738252077/player/162ed63802",
-            "6738252077",
+            {
+                "type": "single_photo",
+                "photo_id": "6738252077",
+                "user_url": "https://www.flickr.com/photos/chucksutherland/",
+                "user_id": None,
+            },
         ),
+        (
+            "http://flickr.com/photo/17277074@N00/2619974961",
+            {
+                "type": "single_photo",
+                "photo_id": "2619974961",
+                "user_url": "https://www.flickr.com/photos/17277074@N00/",
+                "user_id": "17277074@N00",
+            },
+        ),
+        (
+            "http://flickr.com/photo/art-sarah/2619974961",
+            {
+                "type": "single_photo",
+                "photo_id": "2619974961",
+                "user_url": "https://www.flickr.com/photos/art-sarah/",
+                "user_id": None,
+            },
+        ),
+        (
+            "https://www.flickr.com/photos/gracewong/196155401/meta/",
+            {
+                "type": "single_photo",
+                "photo_id": "196155401",
+                "user_url": "https://www.flickr.com/photos/gracewong/",
+                "user_id": None,
+            },
+        ),
+        #
+        # From https://commons.wikimedia.org/wiki/File:75016-75017_Avenues_Foch_et_de_la_Grande_Armée_20050919.jpg
+        # Retrieved 12 December 2023
+        (
+            "https://www.flickr.com/photos/joyoflife//44627174",
+            {
+                "type": "single_photo",
+                "photo_id": "44627174",
+                "user_url": "https://www.flickr.com/photos/joyoflife/",
+                "user_id": None,
+            },
+        ),
+    ],
+)
+def test_it_parses_a_single_photo_with_user_info(
+    url: str, single_photo: SinglePhoto
+) -> None:
+    assert parse_flickr_url(url) == single_photo
+
+
+@pytest.mark.parametrize(
+    ["url", "photo_id"],
+    [
         (
             "https://live.staticflickr.com/65535/53381630964_63d765ee92_s.jpg",
             "53381630964",
@@ -135,9 +249,7 @@ def test_it_can_parse_the_homepage(url: str) -> None:
         ("photos12.flickr.com/16159487_3a6615a565_b.jpg", "16159487"),
         ("http://farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
         ("farm1.static.flickr.com/82/241708183_dd0847d5c7_o.jpg", "241708183"),
-        ("http://flickr.com/photo/17277074@N00/2619974961", "2619974961"),
         ("https://www.flickr.com/photo_zoom.gne?id=196155401&size=m", "196155401"),
-        ("https://www.flickr.com/photos/gracewong/196155401/meta/", "196155401"),
         ("https://www.flickr.com/photo_exif.gne?id=1427904898", "1427904898"),
         # This URL is linked from https://commons.wikimedia.org/wiki/File:Adriaen_Brouwer_-_The_slaughter_feast.jpg
         (
@@ -157,10 +269,6 @@ def test_it_can_parse_the_homepage(url: str) -> None:
         # From https://commons.wikimedia.org/wiki/File:IgnazioDanti.jpg
         # Retrieved 12 December 2023
         ("c8.staticflickr.com/6/5159/14288803431_7cf094b085_b.jpg", "14288803431"),
-        #
-        # From https://commons.wikimedia.org/wiki/File:75016-75017_Avenues_Foch_et_de_la_Grande_Armée_20050919.jpg
-        # Retrieved 12 December 2023
-        ("https://www.flickr.com/photos/joyoflife//44627174", "44627174"),
         #
         # From https://commons.wikimedia.org/wiki/File:The_Peace_Hat_and_President_Chester_Arthur,_1829_-_1886_(3435827496).jpg
         # Retrieved 20 December 2023
@@ -191,10 +299,12 @@ def test_it_can_parse_the_homepage(url: str) -> None:
         ),
     ],
 )
-def test_it_parses_a_single_photo(url: str, photo_id: str) -> None:
+def test_it_parses_a_single_photo_without_user_info(url: str, photo_id: str) -> None:
     assert parse_flickr_url(url) == {
         "type": "single_photo",
         "photo_id": photo_id,
+        "user_url": None,
+        "user_id": None,
     }
 
 
@@ -435,6 +545,8 @@ def test_it_parses_a_short_flickr_url() -> None:
     assert parse_flickr_url(url="https://flic.kr/p/2p4QbKN") == {
         "type": "single_photo",
         "photo_id": "53208249252",
+        "user_url": None,
+        "user_id": None,
     }
 
 
@@ -464,7 +576,12 @@ def test_it_parses_a_short_flickr_url() -> None:
         # one of mine (Alex's)
         pytest.param(
             "https://www.flickr.com/gp/199246608@N02/nSN80jZ64E",
-            {"type": "single_photo", "photo_id": "53279364618"},
+            {
+                "type": "single_photo",
+                "photo_id": "53279364618",
+                "user_url": "https://www.flickr.com/photos/199246608@N02/",
+                "user_id": "199246608@N02",
+            },
             id="nSN80jZ64E",
         ),
     ],

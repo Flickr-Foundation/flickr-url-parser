@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.9.0 - 2024-05-22
+
+*   When parsing a URL which points to a single photo, return the `user_url` and `user_id` (if they can be deduced from the URL).
+
 ## v1.8.3 - 2024-04-30
 
 *   Add a trailing slash to the `user_url` returned in album URLs. This more closely matches the URL structured used on Flickr.com.
