@@ -1,7 +1,6 @@
-black
 build
-flake8
 mypy
+ruff
 pytest-cov
 twine
 vcrpy
