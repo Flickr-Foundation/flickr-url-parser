@@ -1,10 +1,6 @@
-black
 build
-coverage
-flake8
 mypy
-pip-tools
-pytest
+ruff
 pytest-cov
 twine
 vcrpy
