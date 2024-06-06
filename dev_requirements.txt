@@ -4,10 +4,14 @@ build==1.2.1
     # via -r dev_requirements.in
 certifi==2024.6.2
     # via requests
+cffi==1.16.0
+    # via cryptography
 charset-normalizer==3.3.2
     # via requests
-coverage==7.5.3
+coverage[toml]==7.5.3
     # via pytest-cov
+cryptography==42.0.8
+    # via secretstorage
 docutils==0.21.2
     # via readme-renderer
 idna==3.7
@@ -24,6 +28,10 @@ jaraco-context==5.3.0
     # via keyring
 jaraco-functools==4.0.1
     # via keyring
+jeepney==0.8.0
+    # via
+    #   keyring
+    #   secretstorage
 keyring==25.2.1
     # via twine
 markdown-it-py==3.0.0
@@ -50,6 +58,8 @@ pkginfo==1.11.0
     # via twine
 pluggy==1.5.0
     # via pytest
+pycparser==2.22
+    # via cffi
 pygments==2.18.0
     # via
     #   readme-renderer
@@ -74,8 +84,10 @@ rfc3986==2.0.0
     # via twine
 rich==13.7.1
     # via twine
-ruff==0.4.7
+ruff==0.4.8
     # via -r dev_requirements.in
+secretstorage==3.3.3
+    # via keyring
 twine==5.1.0
     # via -r dev_requirements.in
 typing-extensions==4.12.1
