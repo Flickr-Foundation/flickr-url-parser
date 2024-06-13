@@ -8,7 +8,7 @@ from .exceptions import NotAFlickrUrl, UnrecognisedUrl
 from .types import anonymous_single_photo, ParseResult
 
 
-def get_page(url: hyperlink.URL) -> int:
+def get_page(url: hyperlink.URL | hyperlink.DecodedURL) -> int:
     """
     Flickr does pagination by appending a `pageXX` component to the end of URLs, e.g.
 
@@ -123,7 +123,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         raise TypeError(f"Bad type for `url`: expected str, got {type(url).__name__}!")
 
     try:
-        u = hyperlink.URL.from_text(url.rstrip("/"))
+        u = hyperlink.parse(url.rstrip("/"))
 
     # This is for anything which any string can't be parsed as a URL,
     # e.g. `https://https://`
@@ -161,19 +161,19 @@ def parse_flickr_url(url: str) -> ParseResult:
             "live.staticflickr.com",
             "static.flickr.com",
         }:
-            u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
+            u = hyperlink.parse("https://" + url.rstrip("/"))
 
         elif re.match(r"^photos[0-9]+\.flickr\.com$", u.path[0].lower()) is not None:
-            u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
+            u = hyperlink.parse("https://" + url.rstrip("/"))
 
         elif (
             re.match(r"^farm[0-9]+\.static\.?flickr\.com$", u.path[0].lower())
             is not None
         ):
-            u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
+            u = hyperlink.parse("https://" + url.rstrip("/"))
 
         elif re.match(r"^c[0-9]+\.staticflickr\.com$", u.path[0].lower()) is not None:
-            u = hyperlink.URL.from_text("https://" + url.rstrip("/"))
+            u = hyperlink.parse("https://" + url.rstrip("/"))
 
     # If this URL doesn't come from Flickr.com, then we can't possibly classify
     # it as a Flickr URL!
