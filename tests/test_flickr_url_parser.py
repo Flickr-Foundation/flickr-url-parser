@@ -429,8 +429,8 @@ def test_it_parses_a_short_user_url(vcr_cassette: str) -> None:
 @pytest.mark.parametrize(
     "url",
     [
-        "https://flic.kr/ps",
-        "https://flic.kr/ps/ZVcni/extra-bits",
+        pytest.param("https://flic.kr/ps", id="ps"),
+        pytest.param("https://flic.kr/ps/ZVcni/extra-bits", id="extra-bits"),
         pytest.param("https://flic.kr/ps/ZZZZZZZZZ", id="ZZZZZZZZZ"),
     ],
 )
@@ -512,7 +512,7 @@ def test_it_parses_a_short_gallery(vcr_cassette: str, url: str) -> None:
     "url",
     [
         pytest.param("https://flic.kr/y/222222222222", id="222222222222"),
-        "http://flic.kr/y/!!!",
+        pytest.param("http://flic.kr/y/!!!", id="!!!"),
     ],
 )
 def test_it_doesnt_parse_bad_short_gallery_urls(vcr_cassette: str, url: str) -> None:
