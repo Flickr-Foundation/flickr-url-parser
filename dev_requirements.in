@@ -4,5 +4,6 @@ build
 mypy
 ruff
 pytest-cov
+silver-nitrate
 twine
 vcrpy
