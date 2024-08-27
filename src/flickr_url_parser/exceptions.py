@@ -1,6 +1,12 @@
+"""
+Exceptions that are thrown when we're unable to parse a URL as
+a Flickr URL.
+"""
+
+
 class NotAFlickrUrl(Exception):
     """
-    Raised when somebody tries to flinumerate a URL which isn't from Flickr.
+    Raised when somebody tries to parse a URL which isn't from Flickr.
     """
 
     pass
@@ -8,7 +14,7 @@ class NotAFlickrUrl(Exception):
 
 class UnrecognisedUrl(Exception):
     """
-    Raised when somebody tries to flinumerate a URL on Flickr, but we
+    Raised when somebody tries to parse a URL on Flickr, but we
     can't work out what photos are there.
     """
 

@@ -1,6 +1,7 @@
 file:.
 
 build
+interrogate
 mypy
 ruff
 pytest-cov
