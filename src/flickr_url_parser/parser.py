@@ -1,3 +1,7 @@
+"""
+The bulk of the parsing code.
+"""
+
 import re
 
 import httpx

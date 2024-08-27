@@ -1,3 +1,7 @@
+"""
+Tests for ``flickr_url_parser``.
+"""
+
 import pytest
 
 from flickr_url_parser import (
@@ -13,6 +17,9 @@ from flickr_url_parser.types import Album, Gallery, Group, SinglePhoto, Tag
     ["text", "result"], [("47265398@N04", True), ("blueminds", False), ("", False)]
 )
 def test_is_flickr_user_id(text: str, result: bool) -> None:
+    """
+    Check whether a given piece of text is a Flickr user NSID.
+    """
     assert is_flickr_user_id(text) == result
 
 
@@ -28,6 +35,10 @@ def test_is_flickr_user_id(text: str, result: bool) -> None:
     ],
 )
 def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
+    """
+    Any fragment of text which can be parsed as a URL but isn't
+    a Flickr URL throws ``NotAFlickrUrl``.
+    """
     with pytest.raises(NotAFlickrUrl):
         parse_flickr_url(url)
 
@@ -62,22 +73,23 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
     ],
 )
 def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
+    """
+    URLs on a Flickr.com domain which can't be identified throw
+    ``UnrecognisedUrl``.
+    """
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url)
 
 
-@pytest.mark.parametrize(
-    "url",
-    [
-        "https://www.flickr.com/photos/coast_guard/32812033543",
-        "http://www.flickr.com/photos/coast_guard/32812033543",
-        "https://flickr.com/photos/coast_guard/32812033543",
-        "http://flickr.com/photos/coast_guard/32812033543",
-        "www.flickr.com/photos/coast_guard/32812033543",
-        "flickr.com/photos/coast_guard/32812033543",
-    ],
-)
-def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
+@pytest.mark.parametrize("protocol", ["http://", "https://", ""])
+@pytest.mark.parametrize("host", ["flickr.com", "www.flickr.com"])
+def test_it_can_parse_variations_of_url(protocol: str, host: str) -> None:
+    """
+    A URL will be parsed consistently, even if there are variations in
+    the protocol/domain.
+    """
+    url = f"{protocol}{host}/photos/coast_guard/32812033543"
+
     assert parse_flickr_url(url) == {
         "type": "single_photo",
         "photo_id": "32812033543",
@@ -102,6 +114,14 @@ def test_it_can_parse_urls_even_if_the_host_is_a_bit_unusual(url: str) -> None:
     ],
 )
 def test_it_can_parse_the_homepage(url: str) -> None:
+    """
+    It can parse different forms of the homepage URL, varying by:
+
+    *   protocol
+    *   domain name
+    *   trailing slash or not
+
+    """
     assert parse_flickr_url(url) == {"type": "homepage"}
 
 
@@ -236,6 +256,9 @@ def test_it_can_parse_the_homepage(url: str) -> None:
 def test_it_parses_a_single_photo_with_user_info(
     url: str, single_photo: SinglePhoto
 ) -> None:
+    """
+    It can parse different forms of single photo URL.
+    """
     assert parse_flickr_url(url) == single_photo
 
 
@@ -300,9 +323,25 @@ def test_it_parses_a_single_photo_with_user_info(
     ],
 )
 def test_it_parses_a_single_photo_without_user_info(url: str, photo_id: str) -> None:
+    """
+    Parse variants of the single photo URL that don't give any information
+    about the photo's owner.
+    """
     assert parse_flickr_url(url) == {
         "type": "single_photo",
         "photo_id": photo_id,
+        "user_url": None,
+        "user_id": None,
+    }
+
+
+def test_it_parses_a_short_flickr_url() -> None:
+    """
+    Parse a short URL which redirects to a single photo.
+    """
+    assert parse_flickr_url(url="https://flic.kr/p/2p4QbKN") == {
+        "type": "single_photo",
+        "photo_id": "53208249252",
         "user_url": None,
         "user_id": None,
     }
@@ -341,6 +380,9 @@ def test_it_parses_a_single_photo_without_user_info(url: str, photo_id: str) -> 
     ],
 )
 def test_it_parses_an_album(url: str, album: Album) -> None:
+    """
+    Parse album URLs.
+    """
     assert parse_flickr_url(url) == album
 
 
@@ -352,6 +394,9 @@ def test_it_parses_an_album(url: str, album: Album) -> None:
     ],
 )
 def test_it_parses_a_short_album_url(vcr_cassette: str, url: str) -> None:
+    """
+    Parse short URLs which redirect to albums.
+    """
     assert parse_flickr_url(url) == {
         "type": "album",
         "user_url": "https://www.flickr.com/photos/64527945@N07/",
@@ -363,11 +408,16 @@ def test_it_parses_a_short_album_url(vcr_cassette: str, url: str) -> None:
 @pytest.mark.parametrize(
     "url",
     [
+        pytest.param("http://flic.kr/s/", id="http-s"),
         pytest.param("http://flic.kr/s/---", id="dashes"),
         pytest.param("https://flic.kr/s/aaaaaaaaaaaaa", id="aaaaaaaaaaaaa"),
     ],
 )
 def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: str, url: str) -> None:
+    """
+    Parsing a short URL which looks like an album but doesn't redirect
+    to one throws ``UnrecognisedUrl``
+    """
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url)
 
@@ -382,6 +432,9 @@ def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: str, url: str) -> No
     ],
 )
 def test_it_parses_a_user(url: str) -> None:
+    """
+    Parse a user's profile URL with a path alias.
+    """
     assert parse_flickr_url(url) == {
         "type": "user",
         "user_url": "https://www.flickr.com/photos/blueminds/",
@@ -400,6 +453,9 @@ def test_it_parses_a_user(url: str) -> None:
     ],
 )
 def test_it_parses_a_user_with_id(url: str) -> None:
+    """
+    Parse a user's profile URL with their NSID.
+    """
     assert parse_flickr_url(url) == {
         "type": "user",
         "user_url": "https://www.flickr.com/photos/47265398@N04/",
@@ -409,6 +465,9 @@ def test_it_parses_a_user_with_id(url: str) -> None:
 
 
 def test_it_gets_page_information_about_user_urls() -> None:
+    """
+    Get the page number from a paginated URL in a user's photostream.
+    """
     assert parse_flickr_url("https://www.flickr.com/photos/blueminds/page3") == {
         "type": "user",
         "user_url": "https://www.flickr.com/photos/blueminds/",
@@ -418,6 +477,9 @@ def test_it_gets_page_information_about_user_urls() -> None:
 
 
 def test_it_parses_a_short_user_url(vcr_cassette: str) -> None:
+    """
+    Parse a short URL which redirects to a user's photostream.
+    """
     assert parse_flickr_url("https://flic.kr/ps/ZVcni") == {
         "type": "user",
         "user_url": "https://www.flickr.com/photos/astrosamantha/",
@@ -435,6 +497,10 @@ def test_it_parses_a_short_user_url(vcr_cassette: str) -> None:
     ],
 )
 def test_it_doesnt_parse_bad_short_user_urls(vcr_cassette: str, url: str) -> None:
+    """
+    Parsing a short URL which has the `/ps` path component for a photostream
+    but doesn't redirect to one throws ``UnrecognisedUrl``
+    """
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url)
 
@@ -469,6 +535,9 @@ def test_it_doesnt_parse_bad_short_user_urls(vcr_cassette: str, url: str) -> Non
     ],
 )
 def test_it_parses_a_group(url: str, group: Group) -> None:
+    """
+    Parse URLs to a group.
+    """
     assert parse_flickr_url(url) == group
 
 
@@ -490,6 +559,9 @@ def test_it_parses_a_group(url: str, group: Group) -> None:
     ],
 )
 def test_it_parses_a_gallery(url: str, gallery: Gallery) -> None:
+    """
+    Parse gallery URLs.
+    """
     assert parse_flickr_url(url) == gallery
 
 
@@ -501,6 +573,9 @@ def test_it_parses_a_gallery(url: str, gallery: Gallery) -> None:
     ],
 )
 def test_it_parses_a_short_gallery(vcr_cassette: str, url: str) -> None:
+    """
+    Parse a short URL which redirects to a gallery.
+    """
     assert parse_flickr_url(url) == {
         "type": "gallery",
         "gallery_id": "72157690638331410",
@@ -516,6 +591,10 @@ def test_it_parses_a_short_gallery(vcr_cassette: str, url: str) -> None:
     ],
 )
 def test_it_doesnt_parse_bad_short_gallery_urls(vcr_cassette: str, url: str) -> None:
+    """
+    Parsing a short URL which has the `/y` path component for a gallery
+    but doesn't redirect to one throws ``UnrecognisedUrl``.
+    """
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url)
 
@@ -538,27 +617,12 @@ def test_it_doesnt_parse_bad_short_gallery_urls(vcr_cassette: str, url: str) -> 
     ],
 )
 def test_it_parses_a_tag(url: str, tag: Tag) -> None:
+    """
+    Parse tag URLs.
+    """
     assert parse_flickr_url(url) == tag
 
 
-def test_it_parses_a_short_flickr_url() -> None:
-    assert parse_flickr_url(url="https://flic.kr/p/2p4QbKN") == {
-        "type": "single_photo",
-        "photo_id": "53208249252",
-        "user_url": None,
-        "user_id": None,
-    }
-
-
-# Note: Guest Pass URLs are used to give somebody access to content
-# on Flickr, even if (1) the content is private or (2) the person
-# looking at the content isn't logged in.
-#
-# We should be a bit careful about test cases here, and only use
-# Guest Pass URLs that have been shared publicly, to avoid accidentally
-# sharing a public link to somebody's private photos.
-#
-# See https://www.flickrhelp.com/hc/en-us/articles/4404078163732-Change-your-privacy-settings
 @pytest.mark.parametrize(
     ["url", "expected"],
     [
@@ -589,14 +653,34 @@ def test_it_parses_a_short_flickr_url() -> None:
 def test_it_parses_guest_pass_urls(
     vcr_cassette: str, url: str, expected: dict[str, str]
 ) -> None:
+    """
+    Parse guest pass URLs.
+
+    Note: Guest Pass URLs are used to give somebody access to content
+    on Flickr, even if (1) the content is private or (2) the person
+    looking at the content isn't logged in.
+
+    We should be a bit careful about test cases here, and only use
+    Guest Pass URLs that have been shared publicly, to avoid accidentally
+    sharing a public link to somebody's private photos.
+
+    See https://www.flickrhelp.com/hc/en-us/articles/4404078163732-Change-your-privacy-settings
+    """
     assert parse_flickr_url(url) == expected
 
 
 def test_it_doesnt_parse_a_broken_guest_pass_url(vcr_cassette: str) -> None:
+    """
+    Parsing a URL which has the `/gp` path component for a guest pass
+    but doesn't redirect to one throws ``UnrecognisedUrl``.
+    """
     with pytest.raises(UnrecognisedUrl):
         parse_flickr_url(url="https://www.flickr.com/gp/1234/doesnotexist")
 
 
 def test_a_non_string_is_an_error() -> None:
+    """
+    Parsing a non-string/non-URL value throws ``UnrecognisedUrl``.
+    """
     with pytest.raises(TypeError, match="Bad type for `url`: expected str, got int!"):
         parse_flickr_url(url=-1)  # type: ignore

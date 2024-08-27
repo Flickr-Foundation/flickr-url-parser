@@ -1,3 +1,10 @@
+"""
+Code for finding Flickr URLs in a block of text.
+
+TODO: ``matcher`` isn't a good name for this file/function.  Find a better
+name for it.
+"""
+
 import re
 
 

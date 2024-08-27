@@ -1,3 +1,7 @@
+"""
+Tests for the flickr_url_parser CLI.
+"""
+
 import json
 
 from pytest import CaptureFixture
@@ -6,6 +10,9 @@ from flickr_url_parser.cli import run_cli
 
 
 def test_run_cli(capsys: CaptureFixture[str]) -> None:
+    """
+    Running ``flickr_url_parser URL`` prints the parsed URL as JSON.
+    """
     rc = run_cli(
         argv=[
             "flickr_url_parser",
@@ -26,6 +33,9 @@ def test_run_cli(capsys: CaptureFixture[str]) -> None:
 
 
 def test_run_cli_shows_help(capsys: CaptureFixture[str]) -> None:
+    """
+    Running ``flickr_url_parser --help`` prints the help message.
+    """
     rc = run_cli(argv=["flickr_url_parser", "--help"])
 
     assert rc == 0
@@ -36,6 +46,9 @@ def test_run_cli_shows_help(capsys: CaptureFixture[str]) -> None:
 
 
 def test_run_cli_shows_version(capsys: CaptureFixture[str]) -> None:
+    """
+    Running ``flickr_url_parser --version`` prints the version number.
+    """
     rc = run_cli(argv=["flickr_url_parser", "--version"])
 
     assert rc == 0
@@ -46,6 +59,9 @@ def test_run_cli_shows_version(capsys: CaptureFixture[str]) -> None:
 
 
 def test_run_cli_throws_err(capsys: CaptureFixture[str]) -> None:
+    """
+    Running ``flickr_url_parser`` without a URL is an error.
+    """
     rc = run_cli(argv=["flickr_url_parser"])
 
     assert rc == 1

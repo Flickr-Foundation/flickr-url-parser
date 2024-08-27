@@ -1,3 +1,7 @@
+"""
+Tests for ``flickr_url_parser.matcher``.
+"""
+
 import pytest
 
 from flickr_url_parser import find_flickr_urls_in_text
@@ -30,14 +34,21 @@ from flickr_url_parser import find_flickr_urls_in_text
     ],
 )
 def test_find_flickr_urls_in_text(url: str) -> None:
+    """
+    Find a URL in the middle of some text.
+    """
     text = f"aaa {url} bbb"
     assert find_flickr_urls_in_text(text) == [url]
 
 
 def test_it_strips_trailing_dots() -> None:
-    # This is based on text taken from
-    # https://commons.wikimedia.org/wiki/File:HMAS_AE2_Sydney.jpg
-    # Retrieved 12 December 2023
+    """
+    Find a URL in a sentence with a trailing period.
+
+    This is based on text taken from
+    https://commons.wikimedia.org/wiki/File:HMAS_AE2_Sydney.jpg
+    Retrieved 12 December 2023
+    """
     text = "File source is https://www.flickr.com/photos/41311545@N05/4302722415."
 
     assert find_flickr_urls_in_text(text) == [
