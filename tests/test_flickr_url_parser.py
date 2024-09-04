@@ -5,22 +5,11 @@ Tests for ``flickr_url_parser``.
 import pytest
 
 from flickr_url_parser import (
-    is_flickr_user_id,
     parse_flickr_url,
     NotAFlickrUrl,
     UnrecognisedUrl,
 )
 from flickr_url_parser.types import Album, Gallery, Group, SinglePhoto, Tag
-
-
-@pytest.mark.parametrize(
-    ["text", "result"], [("47265398@N04", True), ("blueminds", False), ("", False)]
-)
-def test_is_flickr_user_id(text: str, result: bool) -> None:
-    """
-    Check whether a given piece of text is a Flickr user NSID.
-    """
-    assert is_flickr_user_id(text) == result
 
 
 @pytest.mark.parametrize(
