@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v1.10.0 - 2024-09-04
+
+*   Add a new method `looks_like_flickr_photo_id` which tells you if a particular string looks like a Flickr photo ID, or not.
+*   Rename `is_flickr_user_id` to `looks_like_flickr_user_id` to clarify that this function is a quick heuristic, and not a guarantee that a user ID exists.
+
 ## v1.9.0 - 2024-05-22
 
 *   When parsing a URL which points to a single photo, return the `user_url` and `user_id` (if they can be deduced from the URL).

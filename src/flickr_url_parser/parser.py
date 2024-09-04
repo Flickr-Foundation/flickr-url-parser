@@ -67,14 +67,33 @@ def is_digits(path_component: str) -> bool:
     return re.match(r"^[0-9]+$", path_component) is not None
 
 
-def is_flickr_user_id(text: str) -> bool:
+def looks_like_flickr_photo_id(text: str, /) -> bool:
+    """
+    Returns True if ``text`` looks like a Flickr photo ID, False otherwise.
+
+        >>> looks_like_flickr_photo_id("10875442124")
+        True
+        >>> looks_like_flickr_photo_id("everydayfilms")
+        False
+
+    This does not mean that ``text`` definitely is the ID of a photo
+    on Flickr, but it does allow us to reject some common mistakes.
+
+    """
+    return is_digits(text)
+
+
+def looks_like_flickr_user_id(text: str, /) -> bool:
     """
     Returns True if ``text`` looks like a Flickr user ID, False otherwise.
 
-        >>> is_flickr_user_id("127885125@N05")
+        >>> looks_like_flickr_user_id("127885125@N05")
         True
-        >>> is_flickr_user_id("everydayfilms")
+        >>> looks_like_flickr_user_id("everydayfilms")
         False
+
+    This does not mean that ``text`` definitely is the ID of a user
+    on Flickr, but it does allow us to reject some common mistakes.
 
     """
     return re.match(r"^[0-9]{5,11}@N[0-9]{2}$", text) is not None
@@ -252,9 +271,9 @@ def parse_flickr_url(url: str) -> ParseResult:
         is_long_url
         and len(u.path) >= 3
         and u.path[0] == "photos"
-        and is_digits(u.path[2])
+        and looks_like_flickr_photo_id(u.path[2])
     ):
-        if is_flickr_user_id(u.path[1].upper()):
+        if looks_like_flickr_user_id(u.path[1].upper()):
             return {
                 "type": "single_photo",
                 "photo_id": u.path[2],
@@ -283,9 +302,9 @@ def parse_flickr_url(url: str) -> ParseResult:
         is_long_url
         and len(u.path) >= 3
         and u.path[0] == "photo"
-        and is_digits(u.path[2])
+        and looks_like_flickr_photo_id(u.path[2])
     ):
-        if is_flickr_user_id(u.path[1].upper()):
+        if looks_like_flickr_user_id(u.path[1].upper()):
             return {
                 "type": "single_photo",
                 "photo_id": u.path[2],
@@ -327,7 +346,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     ):
         photo_id = u.get("id")[0]
 
-        if isinstance(photo_id, str) and is_digits(photo_id):
+        if isinstance(photo_id, str) and looks_like_flickr_photo_id(photo_id):
             return anonymous_single_photo(photo_id)
 
     if (
@@ -362,7 +381,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         and is_digits(u.path[0])
     ):
         photo_id, *_ = u.path[1].split("_")
-        if is_digits(photo_id):
+        if looks_like_flickr_photo_id(photo_id):
             return anonymous_single_photo(photo_id)
 
     # The URL for a static video file, e.g.
@@ -374,7 +393,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         and u.host == "live.staticflickr.com"
         and len(u.path) >= 2
         and u.path[0] == "video"
-        and is_digits(u.path[1])
+        and looks_like_flickr_photo_id(u.path[1])
     ):
         return anonymous_single_photo(photo_id=u.path[1])
 
@@ -388,7 +407,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         and len(u.path) >= 1
     ):
         photo_id, *_ = u.path[0].split("_")
-        if is_digits(photo_id):
+        if looks_like_flickr_photo_id(photo_id):
             return anonymous_single_photo(photo_id)
 
     # The URL for a static file, e.g.
@@ -402,7 +421,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         and is_digits(u.path[1])
     ):
         photo_id, *_ = u.path[2].split("_")
-        if is_digits(photo_id):
+        if looks_like_flickr_photo_id(photo_id):
             return anonymous_single_photo(photo_id)
 
     # The URL for an album, e.g.
@@ -436,7 +455,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     if is_long_url and len(u.path) >= 2 and u.path[0] in {"photos", "people"}:
         user_url = f"https://www.flickr.com/photos/{u.path[1]}/"
 
-        if is_flickr_user_id(u.path[1]):
+        if looks_like_flickr_user_id(u.path[1]):
             user_id = u.path[1]
         else:
             user_id = None
@@ -518,7 +537,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     ):
         photo_id = u.get("photo_id")[0]
 
-        if isinstance(photo_id, str) and is_digits(photo_id):
+        if isinstance(photo_id, str) and looks_like_flickr_photo_id(photo_id):
             return anonymous_single_photo(photo_id)
 
     raise UnrecognisedUrl(f"Unrecognised URL: {url}")
