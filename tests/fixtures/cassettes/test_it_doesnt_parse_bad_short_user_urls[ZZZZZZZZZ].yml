@@ -459,8 +459,6 @@ interactions:
       - LHR61-P1
       X-Cache:
       - Error from cloudfront
-      content-encoding:
-      - gzip
       content-security-policy:
       - 'style-src ''unsafe-inline'' https://*.flickr.com https://*.staticflickr.com
         https://*.flickr.net https://*.braintreegateway.com https://*.kaptcha.com

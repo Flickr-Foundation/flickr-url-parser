@@ -3371,8 +3371,6 @@ interactions:
       - Miss from cloudfront
       cache-control:
       - no-cache, max-age=0, must-revalidate, no-store
-      content-encoding:
-      - gzip
       pragma:
       - no-cache
       set-cookie:
