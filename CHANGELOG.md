@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.11.0 - 2025-03-04
+
+*   Add support for parsing URLs from the Flickr Commons Explorer (<https://commons.flickr.org/>).
+
 ## v1.10.0 - 2024-09-04
 
 *   Add a new method `looks_like_flickr_photo_id` which tells you if a particular string looks like a Flickr photo ID, or not.
