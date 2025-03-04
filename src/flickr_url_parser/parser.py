@@ -210,8 +210,14 @@ def parse_flickr_url(url: str) -> ParseResult:
         or re.match(r"^farm[0-9]+\.staticflickr\.com$", u.host) is not None
         or re.match(r"^c[0-9]+\.staticflickr\.com$", u.host) is not None
     )
+    is_commons_explorer_url = u.host == "commons.flickr.org"
 
-    if not is_long_url and not is_short_url and not is_static_url:
+    if (
+        not is_long_url
+        and not is_short_url
+        and not is_static_url
+        and not is_commons_explorer_url
+    ):
         raise NotAFlickrUrl(url)
 
     # This is for short URLs that point to:
@@ -476,6 +482,26 @@ def parse_flickr_url(url: str) -> ParseResult:
                 "user_url": user_url,
                 "user_id": user_id,
             }
+
+    # The URL for a member in the Commons Explorer, e.g.
+    #
+    #     https://commons.flickr.org/members/cadl_localhistory/
+    #     https://commons.flickr.org/members/107895189@N03/
+    #
+    if is_commons_explorer_url and len(u.path) == 2 and u.path[0] == "members":
+        user_url = f"https://www.flickr.com/photos/{u.path[1]}/"
+
+        if looks_like_flickr_user_id(u.path[1]):
+            user_id = u.path[1]
+        else:
+            user_id = None
+
+        return {
+            "type": "user",
+            "page": 1,
+            "user_url": user_url,
+            "user_id": user_id,
+        }
 
     # URLs for a group, e.g.
     #

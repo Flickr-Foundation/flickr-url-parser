@@ -59,6 +59,8 @@ def test_it_rejects_a_url_which_isnt_flickr(url: str) -> None:
         "farm3.static.flickr.com",
         "https://www.flickr.com/photo.gne?short=-1",
         "https://www.flickr.com/apps/video/stewart.swf?photo_id=-1",
+        "https://commons.flickr.org/",
+        "https://commons.flickr.org/about/",
     ],
 )
 def test_it_rejects_a_flickr_url_which_does_not_have_photos(url: str) -> None:
@@ -449,6 +451,34 @@ def test_it_parses_a_user_with_id(url: str) -> None:
         "type": "user",
         "user_url": "https://www.flickr.com/photos/47265398@N04/",
         "user_id": "47265398@N04",
+        "page": 1,
+    }
+
+
+def test_parses_a_commons_explorer_url_with_path_alias() -> None:
+    """
+    Parse a Commons Explorer member page URL with a path alias.
+    """
+    url = "https://commons.flickr.org/members/swedish_heritage_board/"
+
+    assert parse_flickr_url(url) == {
+        "type": "user",
+        "user_url": "https://www.flickr.com/photos/swedish_heritage_board/",
+        "user_id": None,
+        "page": 1,
+    }
+
+
+def test_parses_a_commons_explorer_url_with_user_id() -> None:
+    """
+    Parse a Commons Explorer member page URL with a user ID.
+    """
+    url = "https://commons.flickr.org/members/107895189@N03/"
+
+    assert parse_flickr_url(url) == {
+        "type": "user",
+        "user_url": "https://www.flickr.com/photos/107895189@N03/",
+        "user_id": "107895189@N03",
         "page": 1,
     }
 
