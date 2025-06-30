@@ -3,6 +3,7 @@ Tests for ``flickr_url_parser``.
 """
 
 import pytest
+from vcr.cassette import Cassette
 
 from flickr_url_parser import (
     parse_flickr_url,
@@ -384,7 +385,7 @@ def test_it_parses_an_album(url: str, album: Album) -> None:
         pytest.param("https://flic.kr/s/aHsjybZ5ZD", id="https-aHsjybZ5ZD"),
     ],
 )
-def test_it_parses_a_short_album_url(vcr_cassette: str, url: str) -> None:
+def test_it_parses_a_short_album_url(vcr_cassette: Cassette, url: str) -> None:
     """
     Parse short URLs which redirect to albums.
     """
@@ -404,7 +405,7 @@ def test_it_parses_a_short_album_url(vcr_cassette: str, url: str) -> None:
         pytest.param("https://flic.kr/s/aaaaaaaaaaaaa", id="aaaaaaaaaaaaa"),
     ],
 )
-def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: str, url: str) -> None:
+def test_it_doesnt_parse_bad_short_album_urls(vcr_cassette: Cassette, url: str) -> None:
     """
     Parsing a short URL which looks like an album but doesn't redirect
     to one throws ``UnrecognisedUrl``
@@ -495,7 +496,7 @@ def test_it_gets_page_information_about_user_urls() -> None:
     }
 
 
-def test_it_parses_a_short_user_url(vcr_cassette: str) -> None:
+def test_it_parses_a_short_user_url(vcr_cassette: Cassette) -> None:
     """
     Parse a short URL which redirects to a user's photostream.
     """
@@ -515,7 +516,7 @@ def test_it_parses_a_short_user_url(vcr_cassette: str) -> None:
         pytest.param("https://flic.kr/ps/ZZZZZZZZZ", id="ZZZZZZZZZ"),
     ],
 )
-def test_it_doesnt_parse_bad_short_user_urls(vcr_cassette: str, url: str) -> None:
+def test_it_doesnt_parse_bad_short_user_urls(vcr_cassette: Cassette, url: str) -> None:
     """
     Parsing a short URL which has the `/ps` path component for a photostream
     but doesn't redirect to one throws ``UnrecognisedUrl``
@@ -591,7 +592,7 @@ def test_it_parses_a_gallery(url: str, gallery: Gallery) -> None:
         pytest.param("http://flic.kr/y/2Xry4Jt", id="http-2Xry4Jt"),
     ],
 )
-def test_it_parses_a_short_gallery(vcr_cassette: str, url: str) -> None:
+def test_it_parses_a_short_gallery(vcr_cassette: Cassette, url: str) -> None:
     """
     Parse a short URL which redirects to a gallery.
     """
@@ -609,7 +610,9 @@ def test_it_parses_a_short_gallery(vcr_cassette: str, url: str) -> None:
         pytest.param("http://flic.kr/y/!!!", id="!!!"),
     ],
 )
-def test_it_doesnt_parse_bad_short_gallery_urls(vcr_cassette: str, url: str) -> None:
+def test_it_doesnt_parse_bad_short_gallery_urls(
+    vcr_cassette: Cassette, url: str
+) -> None:
     """
     Parsing a short URL which has the `/y` path component for a gallery
     but doesn't redirect to one throws ``UnrecognisedUrl``.
@@ -670,7 +673,7 @@ def test_it_parses_a_tag(url: str, tag: Tag) -> None:
     ],
 )
 def test_it_parses_guest_pass_urls(
-    vcr_cassette: str, url: str, expected: dict[str, str]
+    vcr_cassette: Cassette, url: str, expected: dict[str, str]
 ) -> None:
     """
     Parse guest pass URLs.
@@ -688,7 +691,7 @@ def test_it_parses_guest_pass_urls(
     assert parse_flickr_url(url) == expected
 
 
-def test_it_doesnt_parse_a_broken_guest_pass_url(vcr_cassette: str) -> None:
+def test_it_doesnt_parse_a_broken_guest_pass_url(vcr_cassette: Cassette) -> None:
     """
     Parsing a URL which has the `/gp` path component for a guest pass
     but doesn't redirect to one throws ``UnrecognisedUrl``.
