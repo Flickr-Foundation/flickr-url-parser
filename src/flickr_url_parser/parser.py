@@ -99,7 +99,7 @@ def looks_like_flickr_user_id(text: str, /) -> bool:
     return re.match(r"^[0-9]{5,11}@N[0-9]{2}$", text) is not None
 
 
-def parse_flickr_url(url: str) -> ParseResult:
+def parse_flickr_url(url: str, *, follow_redirects: bool = False) -> ParseResult:
     """
     Parse a Flickr URL and return some key information, e.g. whether it's
     a single photo, an album, a user.
@@ -140,6 +140,11 @@ def parse_flickr_url(url: str) -> ParseResult:
     If you pass a URL which isn't a Flickr URL, or a Flickr URL which
     isn't recognised, then the function will throw ``NotAFlickrUrl``
     or ``UnrecognisedUrl`` exceptions.
+
+    Some Flickr URLs can only be parsed by making an HTTP request and
+    following redirects (e.g. Guest Pass or short URLs).  To avoid
+    unexpected HTTP requests, following redirects is disabled by default,
+    and you must opt into it if you want to use this sort of URL.
 
     """
     if not isinstance(url, str):
@@ -234,6 +239,7 @@ def parse_flickr_url(url: str) -> ParseResult:
         and len(u.path) == 2
         and u.path[0] in {"s", "y", "ps"}
         and is_base58(u.path[1])
+        and follow_redirects
     ):
         try:
             redirected_url = str(httpx.get(url, follow_redirects=True).url)
@@ -258,7 +264,7 @@ def parse_flickr_url(url: str) -> ParseResult:
     # the user can revoke them later.
     #
     # The easiest thing to do is to do an HTTP lookup.
-    if is_long_url and len(u.path) > 1 and u.path[0] == "gp":
+    if is_long_url and len(u.path) > 1 and u.path[0] == "gp" and follow_redirects:
         try:
             redirected_url = str(httpx.get(url, follow_redirects=True).url)
             assert redirected_url != url

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v1.12.0 - 2025-06-30
+
+*   To make the library more predictable, it doesn't make HTTP requests or follow redirects by default.
+    If you want to parse Guest Passes or short URLs, you need to explicitly enable it with the `follow_redirects=True`.
+
+    This may break existing code that was parsing these URLs, but they're so rare I don't think they're a big issue in practice.
+
 ## v1.11.0 - 2025-03-04
 
 *   Add support for parsing URLs from the Flickr Commons Explorer (<https://commons.flickr.org/>).
