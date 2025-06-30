@@ -55,9 +55,6 @@ source = [
 show_missing = true
 skip_covered = true
 fail_under = 100
-exclude_also = [
-  "if request.cls is not None",
-]
 
 [tool.pytest.ini_options]
 filterwarnings = ["error"]
