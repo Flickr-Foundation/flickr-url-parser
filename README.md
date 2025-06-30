@@ -19,13 +19,12 @@ $ flickr_url_parser "https://www.flickr.com/photos/blueminds/page3"
 ## Motivation
 
 There's a lot of variety in Flickr URLs, even among URLs that point to the same thing.
-For example, all four of these URLs point to the same photo:
+For example, all three of these URLs point to the same photo page:
 
 ```
 https://www.flickr.com/photos/sdasmarchives/50567413447
 http://flickr.com/photos/49487266@N07/50567413447
 https://www.flickr.com/photo.gne?id=50567413447
-https://live.staticflickr.com/65535/50567413447_afec74ef45_o_d.jpg
 ```
 
 Dealing with all these variants can be tricky – this library aims to simplify that.
