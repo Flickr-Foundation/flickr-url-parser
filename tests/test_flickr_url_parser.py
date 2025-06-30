@@ -389,7 +389,7 @@ def test_it_parses_a_short_album_url(vcr_cassette: Cassette, url: str) -> None:
     """
     Parse short URLs which redirect to albums.
     """
-    assert parse_flickr_url(url) == {
+    assert parse_flickr_url(url, follow_redirects=True) == {
         "type": "album",
         "user_url": "https://www.flickr.com/photos/64527945@N07/",
         "album_id": "72157628959784871",
@@ -500,7 +500,7 @@ def test_it_parses_a_short_user_url(vcr_cassette: Cassette) -> None:
     """
     Parse a short URL which redirects to a user's photostream.
     """
-    assert parse_flickr_url("https://flic.kr/ps/ZVcni") == {
+    assert parse_flickr_url("https://flic.kr/ps/ZVcni", follow_redirects=True) == {
         "type": "user",
         "user_url": "https://www.flickr.com/photos/astrosamantha/",
         "user_id": None,
@@ -516,13 +516,16 @@ def test_it_parses_a_short_user_url(vcr_cassette: Cassette) -> None:
         pytest.param("https://flic.kr/ps/ZZZZZZZZZ", id="ZZZZZZZZZ"),
     ],
 )
-def test_it_doesnt_parse_bad_short_user_urls(vcr_cassette: Cassette, url: str) -> None:
+@pytest.mark.parametrize("follow_redirects", [True, False])
+def test_it_doesnt_parse_bad_short_user_urls(
+    vcr_cassette: Cassette, url: str, follow_redirects: bool
+) -> None:
     """
     Parsing a short URL which has the `/ps` path component for a photostream
     but doesn't redirect to one throws ``UnrecognisedUrl``
     """
     with pytest.raises(UnrecognisedUrl):
-        parse_flickr_url(url)
+        parse_flickr_url(url, follow_redirects=follow_redirects)
 
 
 @pytest.mark.parametrize(
@@ -596,7 +599,7 @@ def test_it_parses_a_short_gallery(vcr_cassette: Cassette, url: str) -> None:
     """
     Parse a short URL which redirects to a gallery.
     """
-    assert parse_flickr_url(url) == {
+    assert parse_flickr_url(url, follow_redirects=True) == {
         "type": "gallery",
         "gallery_id": "72157690638331410",
         "page": 1,
@@ -645,33 +648,33 @@ def test_it_parses_a_tag(url: str, tag: Tag) -> None:
     assert parse_flickr_url(url) == tag
 
 
-@pytest.mark.parametrize(
-    ["url", "expected"],
-    [
-        # from https://twitter.com/PAPhotoMatt/status/1715111983974940683
-        pytest.param(
-            "https://www.flickr.com/gp/realphotomatt/M195SLkj98",
-            {
-                "type": "album",
-                "user_url": "https://www.flickr.com/photos/realphotomatt/",
-                "album_id": "72177720312002426",
-                "page": 1,
-            },
-            id="M195SLkj98",
-        ),
-        # one of mine (Alex's)
-        pytest.param(
-            "https://www.flickr.com/gp/199246608@N02/nSN80jZ64E",
-            {
-                "type": "single_photo",
-                "photo_id": "53279364618",
-                "user_url": "https://www.flickr.com/photos/199246608@N02/",
-                "user_id": "199246608@N02",
-            },
-            id="nSN80jZ64E",
-        ),
-    ],
-)
+GUEST_PASS_URL_TEST_CASES = [
+    # from https://twitter.com/PAPhotoMatt/status/1715111983974940683
+    pytest.param(
+        "https://www.flickr.com/gp/realphotomatt/M195SLkj98",
+        {
+            "type": "album",
+            "user_url": "https://www.flickr.com/photos/realphotomatt/",
+            "album_id": "72177720312002426",
+            "page": 1,
+        },
+        id="M195SLkj98",
+    ),
+    # one of mine (Alex's)
+    pytest.param(
+        "https://www.flickr.com/gp/199246608@N02/nSN80jZ64E",
+        {
+            "type": "single_photo",
+            "photo_id": "53279364618",
+            "user_url": "https://www.flickr.com/photos/199246608@N02/",
+            "user_id": "199246608@N02",
+        },
+        id="nSN80jZ64E",
+    ),
+]
+
+
+@pytest.mark.parametrize(["url", "expected"], GUEST_PASS_URL_TEST_CASES)
 def test_it_parses_guest_pass_urls(
     vcr_cassette: Cassette, url: str, expected: dict[str, str]
 ) -> None:
@@ -688,7 +691,18 @@ def test_it_parses_guest_pass_urls(
 
     See https://www.flickrhelp.com/hc/en-us/articles/4404078163732-Change-your-privacy-settings
     """
-    assert parse_flickr_url(url) == expected
+    assert parse_flickr_url(url, follow_redirects=True) == expected
+
+
+@pytest.mark.parametrize(["url", "expected"], GUEST_PASS_URL_TEST_CASES)
+def test_no_guest_pass_if_no_follow_redirects(
+    url: str, expected: dict[str, str]
+) -> None:
+    """
+    Guest pass URLs aren't parsed if `follow_redirects=False`.
+    """
+    with pytest.raises(UnrecognisedUrl):
+        parse_flickr_url(url, follow_redirects=False)
 
 
 def test_it_doesnt_parse_a_broken_guest_pass_url(vcr_cassette: Cassette) -> None:
@@ -697,7 +711,9 @@ def test_it_doesnt_parse_a_broken_guest_pass_url(vcr_cassette: Cassette) -> None
     but doesn't redirect to one throws ``UnrecognisedUrl``.
     """
     with pytest.raises(UnrecognisedUrl):
-        parse_flickr_url(url="https://www.flickr.com/gp/1234/doesnotexist")
+        parse_flickr_url(
+            url="https://www.flickr.com/gp/1234/doesnotexist", follow_redirects=True
+        )
 
 
 def test_a_non_string_is_an_error() -> None:
